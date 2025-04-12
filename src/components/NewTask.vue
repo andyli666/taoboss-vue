@@ -45,10 +45,12 @@
             </el-pagination>
         </el-form-item>
         <el-form-item label="上架时间">
-            <el-date-picker v-model="form.datetime1" type="datetime" placeholder="留空则不执行上架操作" style="width: 100%" />
+            <el-date-picker v-model="form.datetime1" type="datetime" placeholder="留空则不执行上架操作" style="width: 100%"
+                value-format="YYYY-MM-DD HH:mm:ss" />
         </el-form-item>
         <el-form-item label="下架时间">
-            <el-date-picker v-model="form.datetime2" type="datetime" placeholder="留空则不执行下架操作" style="width: 100%" />
+            <el-date-picker v-model="form.datetime2" type="datetime" placeholder="留空则不执行下架操作" style="width: 100%"
+                value-format="YYYY-MM-DD HH:mm:ss" />
         </el-form-item>
         <el-form-item label="重复周期">
             <el-radio-group v-model="form.repeat">
