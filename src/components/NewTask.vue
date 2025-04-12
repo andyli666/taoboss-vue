@@ -30,7 +30,7 @@
                 <el-table-column label="操作" width="60">
                     <template #default="scope">
                         <el-popconfirm width="160" title="确定取消此行吗？" placement="right"
-                            @confirm="handleDelete(scope.$index)">
+                            @confirm="handleDelete(scope.$index, scope.row)">
                             <template #reference>
                                 <el-button size="small" type="danger">
                                     取消
@@ -73,6 +73,8 @@
 <script setup>
 import { reactive, ref, useTemplateRef } from 'vue'
 import ItemSelect from './ItemSelect.vue'
+import axios from 'axios'
+import qs from 'qs'
 
 const itemSelectRef = useTemplateRef('itemSelectRef')
 
@@ -85,20 +87,21 @@ const form = reactive({
     remark: ''
 })
 
+const tableData = ref([])
+
 const onSubmit = () => {
-    console.log('submit!')
-    form.data.tableData= tableData.value
-    axios.post('/api/test/addTask', form.data).then(response => {
+    const form1 = Object.assign({}, form)
+    form1.items = tableData.value
+    //表单+表格数据一起传送必须用qs.stringify方法，尝试了一个下午！！！！！
+    axios.post('/api/test/addTask', qs.stringify(form1)).then(response => {
         console.log(response)
     }).catch(function (error) {
         console.log(error)
     })
 }
 
-const tableData = ref([])
 
 const getSelectionItems = (items) => {
-    console.log(items)
     tableData.value = items
 }
 
@@ -108,8 +111,26 @@ const pageSize = ref(10) // 每页显示的数据条数
 const handleCurrentChange = (val) => {
     currentPage.value = val
 }
-const handleDelete = (index) => {
-    tableData.value.splice(index, 1)
+const handleDelete = (index, row) => {
+    if (row.sku_id === undefined) {
+        //删除商品
+        const itemIndex = tableData.value.findIndex(currentValue => {
+            return currentValue.num_iid == row.num_iid
+        })
+        tableData.value.splice(itemIndex, 1)
+    } else {
+        //删除sku
+        const itemIndex = tableData.value.findIndex(currentValue => {
+            return currentValue.num_iid == row.parent_id
+        })
+        const skuIndex = tableData.value[itemIndex].children.findIndex(currentValue => {
+            return currentValue.sku_id == row.sku_id
+        })
+        tableData.value[itemIndex].children.splice(skuIndex, 1)
+    }
+}
+function getTableDataIndex(num_iid) {
+
 }
 </script>
 <style scoped>

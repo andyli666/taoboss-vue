@@ -14,7 +14,7 @@
                 <el-button type="primary" @click="getItems">查询</el-button>
             </el-form-item>
         </el-form>
-        <el-table :data="tableData" :tree-props="treeProps" row-key="id" ref="multipleTableRef" @select="handleSelect">
+        <el-table :data="tableData" :tree-props="treeProps" row-key="id" ref="multipleTableRef">
             <el-table-column type="selection" width="55" :reserve-selection="true" />
             <!-- <el-table-column type="index" width="55" label="序号" /> -->
             <el-table-column property="num_iid" label="ID" width="150" />
@@ -116,9 +116,7 @@ const emit = defineEmits(['get-selection-items'])
 const handleConfirm = () => {
     dialogVisible.value = false
     const selectionRows = multipleTableRef.value.getSelectionRows()
-    console.log(selectionRows)
     const selectionRowsCopied = deepCopy(selectionRows)
-    console.log(selectionRowsCopied)
 
     const rows = []
     //由于返回的sku也是作为单独的行，导致sku重复选择了，需要单独处理下
@@ -127,14 +125,12 @@ const handleConfirm = () => {
         selectionRowsCopied.forEach(row => {
             if (row.sku_id !== undefined) {
                 let parentFinded = findParent(row.parent_id, selectionRowsCopied)
-                console.log('parentFinded', parentFinded)
                 if (!parentFinded) {
                     const parent = getParent(row.parent_id)
                     selectionRowsCopied.push(parent)
                 }
             }
         })
-        console.log(selectionRowsCopied)
         //获取所有选中的skuId
         const selectedSkuIds = []
         selectionRowsCopied.forEach(row => {
@@ -166,19 +162,6 @@ const handleConfirm = () => {
     emit('get-selection-items', rows)
 }
 
-const handleSelect = (selection, row) => {
-    // console.log(selection)
-    // console.log(row)
-    // if (selection.length) { // 当子节点被选中时
-    //     if (row.sku_id !== undefined) {//是子节点
-    //         let parent = findParent(row)
-    //         console.log('parent',parent)
-    //         multipleTableRef.value.toggleRowSelection(parent, true)
-    //     }
-    // } else {
-    //     //取消选中所有子节点时，父节点也应该取消选中
-    // }
-}
 //在选中行中查找父节点
 const findParent = (parent_id, rows) => {
     for (let i = 0; i < rows.length; i++) {
