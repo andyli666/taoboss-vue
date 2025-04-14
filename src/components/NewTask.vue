@@ -65,7 +65,7 @@
             <el-input v-model="form.remark" type="textarea" />
         </el-form-item>
         <el-form-item>
-            <el-button type="primary" @click="onSubmit">创建</el-button>
+            <el-button type="primary" @click="onSubmit" :disabled="submitBtnDisabled">创建</el-button>
             <!-- <el-button>取消</el-button> -->
         </el-form-item>
     </el-form>
@@ -73,10 +73,11 @@
     <ItemSelect ref="itemSelectRef" @get-selection-items="getSelectionItems" />
 </template>
 <script setup>
-import { reactive, ref, useTemplateRef } from 'vue'
+import { reactive, ref, useTemplateRef, markRaw } from 'vue'
 import ItemSelect from './ItemSelect.vue'
 import axios from 'axios'
 import qs from 'qs'
+import { CircleCheck } from '@element-plus/icons-vue'
 
 const itemSelectRef = useTemplateRef('itemSelectRef')
 
@@ -91,13 +92,40 @@ const form = reactive({
 
 const tableData = ref([])
 
+const submitBtnDisabled = ref(false)
+
 const onSubmit = () => {
+    submitBtnDisabled.value = true
     const form1 = Object.assign({}, form)
     form1.items = tableData.value
     //表单+表格数据一起传送必须用qs.stringify方法，尝试了一个下午！！！！！
     axios.post('/api/test/addTask', qs.stringify(form1)).then(response => {
-        console.log(response)
+        submitBtnDisabled.value = false
+        if (response.data.status) {
+            ElMessageBox.alert(
+                '创建成功',
+                '提示',
+                {
+                    type: 'success',
+                    icon: markRaw(CircleCheck),
+                    callback: (action) => {
+                        ElMessage({
+                            type: 'info',
+                            message: `action: ${action}`,
+                        })
+                    },
+                }
+            )
+        } else {
+            ElMessage({
+                showClose: true,
+                message: response.data.info,
+                duration: 5000,
+                type: 'error'
+            })
+        }
     }).catch(function (error) {
+        submitBtnDisabled.value = false
         console.log(error)
     })
 }
