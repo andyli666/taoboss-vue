@@ -102,6 +102,7 @@ const formatSku = (items) => {
                 child.pic_url = ""
                 child.title = sku.properties_name.replaceAll(/\d+:/g, "")
                 child.parent_id = item.num_iid
+                child.quantity = sku.quantity
                 children.push(child)
             })
         }

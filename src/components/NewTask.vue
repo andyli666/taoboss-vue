@@ -1,13 +1,13 @@
 <template>
     <el-breadcrumb>
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item>sku定时上下架 </el-breadcrumb-item>
+        <el-breadcrumb-item>sku定时修改库存 </el-breadcrumb-item>
         <el-breadcrumb-item>新建任务</el-breadcrumb-item>
     </el-breadcrumb>
     <div style="margin: 20px 0;">
-        <el-alert title="可对sku执行定时上下架任务" type="info" show-icon />
+        <el-alert title="可对sku执行定时修改库存任务" type="info" show-icon />
     </div>
-    <el-form :model="form" label-width="auto" style="max-width:800px">
+    <el-form :model="form" label-width="auto" style="max-width:1000px">
         <el-form-item label="任务名称">
             <el-input v-model="form.name" placeholder="方便自己后期管理和识别不同任务" />
         </el-form-item>
@@ -26,7 +26,12 @@
                         </el-image>
                     </template>
                 </el-table-column>
-                <el-table-column property="title" label="标题" />
+                <el-table-column property="title" label="标题" width="430" />
+                <el-table-column property="quantity" label="库存" width="150">
+                    <template #default="scope">
+                        <el-input-number v-if="scope.row.sku_id" v-model="scope.row.quantity" :min="0" size="small"  />
+                    </template>
+                </el-table-column>
                 <el-table-column label="操作" width="60">
                     <template #default="scope">
                         <el-popconfirm width="160" title="确定取消此行吗？" placement="right"
