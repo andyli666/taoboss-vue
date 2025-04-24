@@ -142,7 +142,7 @@ const handleConfirm = () => {
         })
         //去掉children中不在选中的sku
         selectionRowsCopied.forEach(row => {
-            if (row.sku_id === undefined) {
+            if (row.sku_id === undefined) {//不是sku行，是商品行
                 const rowTmp = []
                 rowTmp.id = row.id
                 rowTmp.num_iid = row.num_iid
@@ -157,6 +157,7 @@ const handleConfirm = () => {
                     })
                 }
                 rowTmp.children = childrenTmp
+                rowTmp.has_sku = row.skus.length ? true : false //标记这个商品是否包含sku（不包含sku的可以单独修改商品的库存，否则不能）
                 rows.push(rowTmp)
             }
         })

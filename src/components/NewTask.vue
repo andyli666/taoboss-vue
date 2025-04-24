@@ -26,10 +26,10 @@
                         </el-image>
                     </template>
                 </el-table-column>
-                <el-table-column property="title" label="标题" width="430" />
+                <el-table-column property="title" label="标题" width="440" />
                 <el-table-column property="quantity" label="库存" width="150">
                     <template #default="scope">
-                        <el-input-number v-if="scope.row.sku_id" v-model="scope.row.quantity" :min="0" size="small"  />
+                        <el-input-number v-if="scope.row.sku_id || scope.row.has_sku === false" v-model="scope.row.quantity" :min="0" size="small"  />
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width="60">
@@ -137,6 +137,7 @@ const onSubmit = () => {
 
 
 const getSelectionItems = (items) => {
+    console.log(items)
     tableData.value = items
 }
 
