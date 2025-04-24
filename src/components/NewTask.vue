@@ -21,7 +21,7 @@
                 <el-table-column property="num_iid" label="ID" width="150" />
                 <el-table-column property="pic_url" label="主图" width="100">
                     <template #default="scope">
-                        <el-image :src="scope.row.pic_url" style="width: 50px;">
+                        <el-image :src="scope.row.pic_url" style="width:50px;">
                             <template #error>&nbsp;</template>
                         </el-image>
                     </template>
@@ -37,9 +37,7 @@
                         <el-popconfirm width="160" title="确定删除此行吗？" placement="right"
                             @confirm="handleDelete(scope.$index, scope.row)">
                             <template #reference>
-                                <el-button size="small" type="danger">
-                                    删除
-                                </el-button>
+                                <el-button size="small" type="danger">删除</el-button>
                             </template>
                         </el-popconfirm>
                     </template>

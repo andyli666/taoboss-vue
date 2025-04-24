@@ -148,6 +148,7 @@ const handleConfirm = () => {
                 rowTmp.num_iid = row.num_iid
                 rowTmp.pic_url = row.pic_url
                 rowTmp.title = row.title
+                rowTmp.num = row.num
                 const childrenTmp = []
                 if (row.children.length) {
                     row.children.forEach((child, index) => {
