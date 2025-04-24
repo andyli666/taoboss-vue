@@ -1,11 +1,11 @@
 <template>
     <el-breadcrumb>
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item>sku定时修改库存 </el-breadcrumb-item>
+        <el-breadcrumb-item>商品/sku定时修改库存 </el-breadcrumb-item>
         <el-breadcrumb-item>新建任务</el-breadcrumb-item>
     </el-breadcrumb>
     <div style="margin: 20px 0;">
-        <el-alert title="可对sku执行定时修改库存任务" type="info" show-icon />
+        <el-alert title="可对商品/sku执行定时修改库存任务" type="info" show-icon />
     </div>
     <el-form :model="form" label-width="auto" style="max-width:1000px">
         <el-form-item label="任务名称">
