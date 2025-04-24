@@ -5,7 +5,7 @@
         <el-breadcrumb-item>新建任务</el-breadcrumb-item>
     </el-breadcrumb>
     <div style="margin: 20px 0;">
-        <el-alert title="可对商品/sku执行定时修改库存任务" type="info" show-icon />
+        <el-alert title="可对商品/sku执行定时修改库存任务，有sku的商品只能修改各个sku的库存不能直接修改商品库存，无sku的商品可直接修改商品库存" type="info" show-icon />
     </div>
     <el-form :model="form" label-width="auto" style="max-width:1000px">
         <el-form-item label="任务名称">
