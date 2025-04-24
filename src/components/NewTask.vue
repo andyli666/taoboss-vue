@@ -4,7 +4,7 @@
         <el-breadcrumb-item>商品/sku定时修改库存 </el-breadcrumb-item>
         <el-breadcrumb-item>新建任务</el-breadcrumb-item>
     </el-breadcrumb>
-    <div style="margin: 20px 0;">
+    <div style="margin:20px 0">
         <el-alert title="可对商品/sku执行定时修改库存任务，有sku的商品只能修改各个sku的库存不能直接修改商品库存，无sku的商品可直接修改商品库存" type="info" show-icon />
     </div>
     <el-form :model="form" label-width="auto" style="max-width:1000px">
@@ -26,7 +26,7 @@
                         </el-image>
                     </template>
                 </el-table-column>
-                <el-table-column property="title" label="标题" width="440" />
+                <el-table-column property="title" label="标题" width="458" />
                 <el-table-column property="quantity" label="库存" width="150">
                     <template #default="scope">
                         <el-input-number v-if="scope.row.sku_id || scope.row.has_sku === false" v-model="scope.row.quantity" :min="0" size="small"  />
@@ -34,11 +34,11 @@
                 </el-table-column>
                 <el-table-column label="操作" width="60">
                     <template #default="scope">
-                        <el-popconfirm width="160" title="确定取消此行吗？" placement="right"
+                        <el-popconfirm width="160" title="确定删除此行吗？" placement="right"
                             @confirm="handleDelete(scope.$index, scope.row)">
                             <template #reference>
                                 <el-button size="small" type="danger">
-                                    取消
+                                    删除
                                 </el-button>
                             </template>
                         </el-popconfirm>
@@ -71,7 +71,6 @@
         </el-form-item>
         <el-form-item>
             <el-button type="primary" @click="onSubmit" :disabled="submitBtnDisabled">创建</el-button>
-            <!-- <el-button>取消</el-button> -->
         </el-form-item>
     </el-form>
 
