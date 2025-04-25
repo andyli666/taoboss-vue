@@ -1,20 +1,20 @@
 <template>
     <el-breadcrumb>
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item>商品/sku定时修改库存 </el-breadcrumb-item>
+        <el-breadcrumb-item>定时修改库存 </el-breadcrumb-item>
         <el-breadcrumb-item>新建任务</el-breadcrumb-item>
     </el-breadcrumb>
     <div style="margin:20px 0">
-        <el-alert title="可对商品/sku执行定时修改库存任务，有sku的商品只能修改各个sku的库存不能直接修改商品库存，无sku的商品可直接修改商品库存" type="info" show-icon />
+        <el-alert title="可对商品或sku执行定时修改库存任务，有sku的商品只能修改各个sku的库存不能直接修改商品库存，无sku的商品可直接修改商品库存" type="info" show-icon />
     </div>
-    <el-form :model="form" label-width="auto" style="max-width:1000px">
+    <el-form :model="form" label-width="auto" style="max-width:1050px">
         <el-form-item label="任务名称">
             <el-input v-model="form.name" placeholder="方便自己后期管理和识别不同任务" />
         </el-form-item>
-        <el-form-item label="sku">
+        <el-form-item label="商品或sku">
             <div style="margin-bottom:0px">
                 <el-button type="primary" plain size="small"
-                    @click="itemSelectRef.dialogVisible = true">添加sku</el-button>
+                    @click="itemSelectRef.dialogVisible = true">添加商品或sku</el-button>
             </div>
             <el-table :data="tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)" row-key="id"
                 default-expand-all>
@@ -48,22 +48,9 @@
                 layout="prev, pager, next" :total="tableData.length">
             </el-pagination>
         </el-form-item>
-        <el-form-item label="上架时间">
-            <el-date-picker v-model="form.datetime1" type="datetime" placeholder="留空则不执行上架操作" style="width: 100%"
+        <el-form-item label="任务执行时间">
+            <el-date-picker v-model="form.task_time" type="datetime" placeholder="请选择任务执行时间" style="width:100%"
                 value-format="YYYY-MM-DD HH:mm:ss" />
-        </el-form-item>
-        <el-form-item label="下架时间">
-            <el-date-picker v-model="form.datetime2" type="datetime" placeholder="留空则不执行下架操作" style="width: 100%"
-                value-format="YYYY-MM-DD HH:mm:ss" />
-        </el-form-item>
-        <el-form-item label="重复周期">
-            <el-radio-group v-model="form.repeat">
-                <el-radio :value="0">不重复，只执行一次</el-radio>
-                <el-radio :value="1">每天</el-radio>
-                <el-radio :value="2">每周</el-radio>
-                <el-radio :value="3">工作日</el-radio>
-                <el-radio :value="4">周末</el-radio>
-            </el-radio-group>
         </el-form-item>
         <el-form-item label="备注">
             <el-input v-model="form.remark" type="textarea" />
@@ -87,9 +74,7 @@ const itemSelectRef = useTemplateRef('itemSelectRef')
 // do not use same name with ref
 const form = reactive({
     name: '',
-    datetime1: '',
-    datetime2: '',
-    repeat: 0,
+    task_time: '',
     remark: ''
 })
 

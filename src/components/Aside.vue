@@ -1,7 +1,7 @@
 <template>
     <el-menu :default-active="activeIndex" class="el-menu-aside" :default-openeds="['1']" >
       <el-sub-menu index="1">
-        <template #title>商品/sku定时修改库存</template>
+        <template #title>定时修改库存</template>
         <el-menu-item index="1-1">新建任务</el-menu-item>
         <el-menu-item index="1-2">任务列表</el-menu-item>
       </el-sub-menu>
