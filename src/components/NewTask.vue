@@ -52,6 +52,15 @@
             <el-date-picker v-model="form.task_time" type="datetime" placeholder="请选择任务执行时间" style="width:100%"
                 value-format="YYYY-MM-DD HH:mm:ss" />
         </el-form-item>
+        <el-form-item label="重复周期">
+            <el-radio-group v-model="form.repeat">
+                <el-radio :value="0">不重复，只执行一次</el-radio>
+                <el-radio :value="1">每天</el-radio>
+                <el-radio :value="2">每周</el-radio>
+                <el-radio :value="3">工作日</el-radio>
+                <el-radio :value="4">周末</el-radio>
+            </el-radio-group>
+        </el-form-item>
         <el-form-item label="备注">
             <el-input v-model="form.remark" type="textarea" />
         </el-form-item>
@@ -75,6 +84,7 @@ const itemSelectRef = useTemplateRef('itemSelectRef')
 const form = reactive({
     name: '',
     task_time: '',
+    repeat: 0,
     remark: ''
 })
 
