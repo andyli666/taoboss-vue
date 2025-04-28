@@ -2,7 +2,7 @@
     <el-dialog v-model="dialogVisible" title="商品选择" width="950" align-center>
         <el-form :inline="true" :model="form" class="item-search-form">
             <el-form-item label="标题或id">
-                <el-input v-model="form.title" autocomplete="off" />
+                <el-input v-model="form.title" clearable />
             </el-form-item>
             <el-form-item label="上架状态">
                 <el-select v-model="form.approveStatus" placeholder="" clearable>
@@ -71,7 +71,7 @@ const form = reactive({
 
 const getItems = () => {
     // axios.post('/item/getItems', {
-    axios.post('/api/test/getItems', {
+    axios.post('/api/ItemTimingUpdateQuantity/getItems', {
         title: form.title,
         approve_status: form.approveStatus,
         page: currentPage.value,

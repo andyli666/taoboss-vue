@@ -29,8 +29,9 @@
                 <el-table-column property="title" label="标题" width="458" />
                 <el-table-column property="quantity" label="库存" width="150">
                     <template #default="scope">
-                        <el-input-number v-if="scope.row.sku_id" v-model="scope.row.quantity" :min="0" size="small"  />
-                        <el-input-number v-else-if="scope.row.has_sku === false" v-model="scope.row.num" :min="0" size="small"  />
+                        <el-input-number v-if="scope.row.sku_id" v-model="scope.row.quantity" :min="0" size="small" />
+                        <el-input-number v-else-if="scope.row.has_sku === false" v-model="scope.row.num" :min="0"
+                            size="small" />
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width="60">
@@ -73,10 +74,11 @@
 </template>
 <script setup>
 import { reactive, ref, useTemplateRef, markRaw } from 'vue'
-import ItemSelect from './ItemSelect.vue'
+import ItemSelect from '../components/ItemSelect.vue'
 import axios from 'axios'
 import qs from 'qs'
 import { CircleCheck } from '@element-plus/icons-vue'
+import { useRouter } from 'vue-router'
 
 const itemSelectRef = useTemplateRef('itemSelectRef')
 
@@ -92,12 +94,14 @@ const tableData = ref([])
 
 const submitBtnDisabled = ref(false)
 
+const router = useRouter()
+
 const onSubmit = () => {
     submitBtnDisabled.value = true
     const form1 = Object.assign({}, form)
     form1.items = tableData.value
     //表单+表格数据一起传送必须用qs.stringify方法，尝试了一个下午！！！！！
-    axios.post('/api/test/addTask', qs.stringify(form1)).then(response => {
+    axios.post('/api/ItemTimingUpdateQuantity/addTask', qs.stringify(form1)).then(response => {
         submitBtnDisabled.value = false
         if (response.data.status) {
             ElMessageBox.alert(
@@ -111,6 +115,7 @@ const onSubmit = () => {
                             type: 'info',
                             message: `action: ${action}`,
                         })
+                        router.push('/list')
                     },
                 }
             )
@@ -130,7 +135,6 @@ const onSubmit = () => {
 
 
 const getSelectionItems = (items) => {
-    console.log(items)
     tableData.value = items
 }
 

@@ -1,6 +1,6 @@
 <script setup>
-import Aside from './components/Aside.vue'
-import NewTask from './components/NewTask.vue'
+import Aside from './views/Aside.vue'
+import NewTask from './views/NewTask.vue'
 </script>
 <template>
   <div class="common-layout">
@@ -10,13 +10,14 @@ import NewTask from './components/NewTask.vue'
         <el-aside width="200px">
           <Aside />
         </el-aside>
-        <el-main><NewTask /></el-main>
+        <el-main>
+          <RouterView />
+        </el-main>
       </el-container>
     </el-container>
   </div>
 </template>
 <style scoped>
-
 .common-layout .el-header {
   display: flex;
   justify-content: center;
@@ -24,6 +25,7 @@ import NewTask from './components/NewTask.vue'
   background-color: var(--el-color-primary-light-7);
   text-align: center
 }
+
 /*
 .common-layout .el-header,
 .common-layout .el-footer,
