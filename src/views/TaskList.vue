@@ -13,7 +13,7 @@
         <el-table-column property="task_time" label="时间" width="200" />
         <el-table-column property="repeat" label="是否重复" width="100">
             <template #default="scope">
-                <div v-if="scope.row.repeat == 0">不重复</div>
+                <div v-if="scope.row.repeat == 0">否</div>
                 <div v-else-if="scope.row.repeat == 1">每天</div>
                 <div v-else-if="scope.row.repeat == 2">每周</div>
                 <div v-else-if="scope.row.repeat == 3">工作日</div>
