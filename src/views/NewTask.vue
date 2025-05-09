@@ -30,7 +30,7 @@
                 <el-table-column property="quantity" label="库存" width="150">
                     <template #default="scope">
                         <el-input-number v-if="scope.row.sku_id" v-model="scope.row.quantity" :min="0" size="small" />
-                        <el-input-number v-else-if="scope.row.has_sku === false" v-model="scope.row.num" :min="0"
+                        <el-input-number v-else-if="scope.row.has_sku == 0" v-model="scope.row.num" :min="0"
                             size="small" />
                     </template>
                 </el-table-column>

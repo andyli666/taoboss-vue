@@ -71,7 +71,7 @@ const form = reactive({
 
 const getItems = () => {
     // axios.post('/item/getItems', {
-    axios.post('/api/ItemTimingUpdateQuantity/getItems', {
+    axios.post('/api/Item/getItems/?test=1', {
         title: form.title,
         approve_status: form.approveStatus,
         page: currentPage.value,
@@ -158,7 +158,7 @@ const handleConfirm = () => {
                     })
                 }
                 rowTmp.children = childrenTmp
-                rowTmp.has_sku = row.skus.length ? true : false //标记这个商品是否包含sku（不包含sku的可以单独修改商品的库存，否则不能）
+                rowTmp.has_sku = row.skus.length ? 1 : 0 //标记这个商品是否包含sku（不包含sku的可以单独修改商品的库存，否则不能）
                 rows.push(rowTmp)
             }
         })

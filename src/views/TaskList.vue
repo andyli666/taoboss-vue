@@ -10,7 +10,7 @@
     <el-table :data="tableData" row-key="id">
         <el-table-column type="index" width="55" label="序号" />
         <el-table-column property="task_name" label="名称" width="500" />
-        <el-table-column property="task_time" label="时间" width="200" />
+        <el-table-column property="task_time" label="任务执行时间" width="200" />
         <el-table-column property="repeat" label="是否重复" width="100">
             <template #default="scope">
                 <div v-if="scope.row.repeat == 0">否</div>
