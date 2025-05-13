@@ -1,13 +1,13 @@
 <template>
     <el-dialog v-model="dialogVisible" title="商品选择" width="950" align-center>
-        <el-form :inline="true" :model="form" class="item-search-form">
+        <el-form :inline="true" :model="form" class="item-search-form" @submit.prevent>
             <el-form-item label="标题或id">
-                <el-input v-model="form.title" clearable />
+                <el-input v-model="form.title" clearable @keyup.enter="getItems" />
             </el-form-item>
             <el-form-item label="上架状态">
                 <el-select v-model="form.approveStatus" placeholder="" clearable>
-                    <el-option label="出售中" value="shanghai" />
-                    <el-option label="仓库中" value="beijing" />
+                    <el-option label="出售中" value="onsale" />
+                    <el-option label="仓库中" value="instock" />
                 </el-select>
             </el-form-item>
             <el-form-item>
@@ -72,7 +72,7 @@ const form = reactive({
 const getItems = () => {
     // axios.post('/item/getItems', {
     axios.post('/api/Item/getItems/?test=1', {
-        title: form.title,
+        title_contains: form.title,
         approve_status: form.approveStatus,
         page: currentPage.value,
         rows: pageSize.value,

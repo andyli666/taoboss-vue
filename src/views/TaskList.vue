@@ -1,10 +1,10 @@
 <template>
-    <el-form :inline="true" :model="form">
+    <el-form :inline="true" :model="form" @submit.prevent>
         <el-form-item label="任务名称">
-            <el-input v-model="form.task_name" clearable />
+            <el-input v-model="form.task_name" clearable @keyup.enter="getTasks" />
         </el-form-item>
         <el-form-item>
-            <el-button type="primary" @click="getTasks">查询</el-button>
+            <el-button type="primary" @click="getTasks" native-type="submit">查询</el-button>
         </el-form-item>
     </el-form>
     <el-table :data="tableData" row-key="id">
