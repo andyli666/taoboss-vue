@@ -1,5 +1,10 @@
 <template>
-    <el-form :inline="true" :model="form" @submit.prevent>
+    <el-breadcrumb>
+        <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+        <el-breadcrumb-item>定时修改库存 </el-breadcrumb-item>
+        <el-breadcrumb-item>任务列表</el-breadcrumb-item>
+    </el-breadcrumb>
+    <el-form :inline="true" :model="form" @submit.prevent style="margin:20px 0">
         <el-form-item label="任务名称">
             <el-input v-model="form.task_name" clearable @keyup.enter="getTasks" />
         </el-form-item>
