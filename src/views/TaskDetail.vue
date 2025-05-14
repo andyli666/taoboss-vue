@@ -1,5 +1,5 @@
 <template>
-    <el-dialog v-model="dialogVisible" title="任务执行明细" width="850">
+    <el-dialog :model-value="dialogVisible" title="任务执行明细" width="850">
         <el-table :data="tableData">
             <el-table-column type="index" width="55" label="序号" />
             <el-table-column property="num_iid" label="商品ID" width="150" />

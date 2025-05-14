@@ -76,7 +76,7 @@ onMounted(() => {
 })
 
 const getTaskDetail = (id) => {
-    getTaskDetailRef.dialogVisible = true
-    getTaskDetailRef.id = id
+    getTaskDetailRef.value.dialogVisible.value = true
+    getTaskDetailRef.value.id.value = id
 }
 </script>
