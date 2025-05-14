@@ -28,17 +28,20 @@
         <el-table-column property="remark" label="备注" width="300" show-overflow-tooltip />
         <el-table-column label="操作" width="150">
             <template #default="scope">
-                <el-button size="small" type="primary" link>查看任务执行明细</el-button>
+                <el-button size="small" type="primary" link @click="getTaskDetail(scope.row.id)">查看任务执行明细</el-button>
             </template>
         </el-table-column>
     </el-table>
     <el-pagination @current-change="handleCurrentChange" :current-page="currentPage" :page-size="pageSize"
         layout="prev, pager, next" :total="total">
     </el-pagination>
+
+    <TaskDetail ref="getTaskDetailRef" />
 </template>
 <script setup>
-import { reactive, ref, onMounted } from 'vue'
+import { reactive, ref, onMounted, useTemplateRef } from 'vue'
 import axios from 'axios'
+import TaskDetail from './TaskDetail.vue'
 
 const tableData = ref([])
 const currentPage = ref(1)
@@ -48,6 +51,8 @@ const total = ref(0)// 总数据条数
 const form = reactive({
     task_name: ''
 })
+
+const getTaskDetailRef = useTemplateRef('getTaskDetailRef')
 
 const getTasks = () => {
     axios.post('/api/ItemTimingUpdateQuantity/getTasks', {
@@ -69,4 +74,9 @@ const handleCurrentChange = (val) => {
 onMounted(() => {
     getTasks()
 })
+
+const getTaskDetail = (id) => {
+    getTaskDetailRef.dialogVisible = true
+    getTaskDetailRef.id = id
+}
 </script>

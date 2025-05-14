@@ -4,7 +4,6 @@
         <template #title>定时修改库存</template>
         <el-menu-item index="/new">新建任务</el-menu-item>
         <el-menu-item index="/list">任务列表</el-menu-item>
-        <el-menu-item index="/detail">任务执行明细</el-menu-item>
       </el-sub-menu>
     </el-menu>
   </template>
