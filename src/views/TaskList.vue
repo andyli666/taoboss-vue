@@ -25,10 +25,11 @@
                 <div v-else-if="scope.row.repeat == 4">周末</div>
             </template>
         </el-table-column>
-        <el-table-column property="remark" label="备注" width="300" show-overflow-tooltip />
+        <el-table-column property="remark" label="备注" show-overflow-tooltip />
         <el-table-column label="操作" width="150">
             <template #default="scope">
-                <el-button size="small" type="primary" link @click="getTaskDetail(scope.row.id)">查看任务执行明细</el-button>
+                <el-button size="small" type="primary" link
+                    @click="getTaskDetailRef.dialogVisible = true; currentTaskId = scope.row.id">查看任务执行明细</el-button>
             </template>
         </el-table-column>
     </el-table>
@@ -36,7 +37,7 @@
         layout="prev, pager, next" :total="total">
     </el-pagination>
 
-    <TaskDetail ref="getTaskDetailRef" />
+    <TaskDetail ref="getTaskDetailRef" :taskId="currentTaskId" />
 </template>
 <script setup>
 import { reactive, ref, onMounted, useTemplateRef } from 'vue'
@@ -53,6 +54,7 @@ const form = reactive({
 })
 
 const getTaskDetailRef = useTemplateRef('getTaskDetailRef')
+const currentTaskId = ref(0)
 
 const getTasks = () => {
     axios.post('/api/ItemTimingUpdateQuantity/getTasks', {
@@ -74,9 +76,4 @@ const handleCurrentChange = (val) => {
 onMounted(() => {
     getTasks()
 })
-
-const getTaskDetail = (id) => {
-    getTaskDetailRef.value.dialogVisible.value = true
-    getTaskDetailRef.value.id.value = id
-}
 </script>

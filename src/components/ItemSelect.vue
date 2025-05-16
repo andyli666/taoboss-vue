@@ -1,5 +1,5 @@
 <template>
-    <el-dialog v-model="dialogVisible" title="商品选择" width="950" align-center>
+    <el-dialog v-model="dialogVisible" title="商品选择" width="950" align-center :close-on-click-modal="false">
         <el-form :inline="true" :model="form" class="item-search-form" @submit.prevent>
             <el-form-item label="标题或id">
                 <el-input v-model="form.title" clearable @keyup.enter="getItems" />
@@ -16,7 +16,6 @@
         </el-form>
         <el-table :data="tableData" :tree-props="treeProps" row-key="id" ref="multipleTableRef">
             <el-table-column type="selection" width="55" :reserve-selection="true" />
-            <!-- <el-table-column type="index" width="55" label="序号" /> -->
             <el-table-column property="num_iid" label="ID" width="150" />
             <el-table-column property="pic_url" label="主图" width="100">
                 <template #default="scope">

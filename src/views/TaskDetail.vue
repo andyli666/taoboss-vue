@@ -1,5 +1,5 @@
 <template>
-    <el-dialog :model-value="dialogVisible" title="任务执行明细" width="850">
+    <el-dialog v-model="dialogVisible" title="任务执行明细" width="850" :close-on-click-modal="false">
         <el-table :data="tableData">
             <el-table-column type="index" width="55" label="序号" />
             <el-table-column property="num_iid" label="商品ID" width="150" />
@@ -37,16 +37,16 @@ const pageSize = ref(10)// 每页显示的数据条数
 const total = ref(0)// 总数据条数
 
 const dialogVisible = ref(false)
-const id = ref(null)
 defineExpose({
-    dialogVisible,
-    id
+    dialogVisible
 })
 
+const { taskId } = defineProps(['taskId'])
+
 const getDetail = () => {
-    if (id.value) {
+    if (taskId) {
         axios.post('/api/ItemTimingUpdateQuantity/getTaskDetail', {
-            id: id.value,
+            id: taskId,
             page: currentPage.value,
             page_size: pageSize.value,
         }).then(response => {
@@ -62,7 +62,8 @@ const handleCurrentChange = (val) => {
     getDetail()
 }
 
-watch(id, (newId) => {
+watch(() => taskId, () => {
+    console.log('newTaskId'+taskId)
     getDetail()
 })
 </script>
