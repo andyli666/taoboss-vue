@@ -1,8 +1,19 @@
 <template>
-    <el-dialog v-model="dialogVisible" title="任务执行明细" width="850" :close-on-click-modal="false">
+    <el-dialog v-model="dialogVisible" title="任务执行明细" width="1000" :close-on-click-modal="false">
+        <el-form :inline="true" :model="form" @submit.prevent size="small">
+            <el-form-item label="商品">
+                <el-input v-model="form.title" clearable @keyup.enter="getDetail" placeholder="商品ID或标题" />
+            </el-form-item>
+             <el-form-item label="sku">
+                <el-input v-model="form.sku_title" clearable @keyup.enter="getDetail" placeholder="skuID或名称" />
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="getDetail">查询</el-button>
+            </el-form-item>
+        </el-form>
         <el-table :data="tableData">
-            <el-table-column type="index" width="55" label="序号" />
-            <el-table-column property="num_iid" label="商品ID" width="150" />
+            <!-- <el-table-column type="index" width="55" label="序号" /> -->
+            <el-table-column property="num_iid" label="商品ID" width="100" />
             <el-table-column property="pic_url" label="主图" width="100">
                 <template #default="scope">
                     <el-image :src="scope.row.pic_url" style="width:50px">
@@ -14,13 +25,13 @@
             <el-table-column property="properties_name" label="sku" width="150" />
             <el-table-column property="quantity" label="执行库存" width="100" />
             <el-table-column property="datetime" label="执行时间" width="200" />
-            <el-table-column property="status" label="执行结果" width="50">
+            <el-table-column property="status" label="执行结果" width="80">
                 <template #default="scope">
                     <div v-if="scope.row.repeat == 1">成功</div>
                     <div v-else-if="scope.row.repeat == 2">出错</div>
                 </template>
             </el-table-column>
-            <el-table-column property="msg" label="出错信息" width="300" show-overflow-tooltip />
+            <el-table-column property="msg" label="出错信息" show-overflow-tooltip />
         </el-table>
         <el-pagination @current-change="handleCurrentChange" :current-page="currentPage" :page-size="pageSize"
             layout="prev, pager, next" :total="total">
@@ -28,7 +39,7 @@
     </el-dialog>
 </template>
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, reactive } from 'vue'
 import axios from 'axios'
 
 const tableData = ref([])
@@ -42,6 +53,10 @@ defineExpose({
 })
 
 const { taskId } = defineProps(['taskId'])
+
+const form = reactive({
+    title: ''
+})
 
 const getDetail = () => {
     if (taskId) {
@@ -63,7 +78,7 @@ const handleCurrentChange = (val) => {
 }
 
 watch(() => taskId, () => {
-    console.log('newTaskId'+taskId)
+    console.log('newTaskId' + taskId)
     getDetail()
 })
 </script>
