@@ -1,5 +1,5 @@
 <template>
-    <el-dialog v-model="dialogVisible" title="任务执行明细" width="1000" :close-on-click-modal="false">
+    <el-dialog v-model="dialogVisible" title="任务执行明细" width="1000">
         <el-form :inline="true" :model="form" @submit.prevent size="small">
             <el-form-item label="商品">
                 <el-input v-model="form.title" clearable @keyup.enter="getDetail" placeholder="商品ID或标题" />
