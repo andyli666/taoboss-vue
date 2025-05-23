@@ -73,7 +73,11 @@ const getDetail = () => {
             id: taskId,
             title: form.title
         }).then(response => {
-            tableData.value = response.data.rows
+            if (response.data.status == 1) {
+                tableData.value = response.data.rows
+            } else {
+                ElMessage.error(response.data.info)
+            }
         }).catch(function (error) {
             console.log(error)
         })
