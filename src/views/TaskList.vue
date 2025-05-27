@@ -33,22 +33,26 @@
                 <div v-else-if="scope.row.status == 3">人工暂停</div>
             </template>
         </el-table-column>
-        <el-table-column label="操作" width="180">
+        <el-table-column label="操作" width="250">
             <template #default="scope">
+                <el-button size="small" type="primary" link style="margin-left:5px"
+                    @click="getTaskDetailRef.dialogVisible = true; currentTaskId = scope.row.id">查看执行明细</el-button>
                 <el-button v-if="scope.row.status == 0" size="small" type="primary" link
-                    @click="cancelTask(scope.row.id)">暂停执行&nbsp;&nbsp;&nbsp;</el-button>
+                    @click="cancelTask(scope.row.id)">暂停执行</el-button>
                 <el-button v-else-if="scope.row.status == 2 || scope.row.status == 3"
-                    :disabled="scope.row.task_time < currentSystemTime" size="small" type="primary" link
-                    @click="restartTask(scope.row.id)">
+                    :disabled="scope.row.repeat == 0 && scope.row.task_time < currentSystemTime" size="small"
+                    type="primary" link @click="restartTask(scope.row.id)">
                     恢复执行
-                    <el-tooltip content="任务执行时间需要大于当前时间" v-if="scope.row.task_time < currentSystemTime">
+                    <el-tooltip content="任务执行时间需要大于当前时间"
+                        v-if="scope.row.repeat == 0 && scope.row.task_time < currentSystemTime">
                         <el-icon>
                             <InfoFilled />
                         </el-icon>
                     </el-tooltip>
                 </el-button>
-                <el-button size="small" type="primary" link style="margin-left:5px"
-                    @click="getTaskDetailRef.dialogVisible = true; currentTaskId = scope.row.id">查看执行明细</el-button>
+                <el-button size="small" type="danger" link
+                    :style="{ 'margin-left': ((scope.row.repeat == 0 && scope.row.task_time < currentSystemTime) ? 5 : 17) + 'px' }"
+                    @click="removeTask(scope.row.id)">删除任务</el-button>
             </template>
         </el-table-column>
         <el-table-column property="remark" label="备注" show-overflow-tooltip>
@@ -113,7 +117,7 @@ const cancelTask = (id) => {
     ElMessageBox.confirm('确定暂停执行任务吗？', 'Warning', { type: 'warning' })
         .then(() => {
             doCancelTask(id)
-        })
+        }).catch(() => { })
 }
 const doCancelTask = (id) => {
     axios.post('/api/ItemTimingUpdateQuantity/cancelTask', {
@@ -137,7 +141,7 @@ const restartTask = (id) => {
     ElMessageBox.confirm('确定恢复执行任务吗？', 'Warning', { type: 'warning' })
         .then(() => {
             doRestartTask(id)
-        })
+        }).catch(() => { })
 }
 
 const doRestartTask = (id) => {
@@ -147,6 +151,31 @@ const doRestartTask = (id) => {
         if (response.data.status == 1) {
             ElMessage({
                 message: '恢复成功',
+                type: 'success',
+            })
+            getTasks()
+        } else {
+            ElMessage.error(response.data.info)
+        }
+    }).catch(function (error) {
+        console.log(error)
+    })
+}
+
+const removeTask = (id) => {
+    ElMessageBox.confirm('确定删除任务吗？', 'Warning', { type: 'warning' })
+        .then(() => {
+            doRemoveTask(id)
+        }).catch(() => { })
+}
+
+const doRemoveTask = (id) => {
+    axios.post('/api/ItemTimingUpdateQuantity/removeTask', {
+        id
+    }).then(response => {
+        if (response.data.status == 1) {
+            ElMessage({
+                message: '删除成功',
                 type: 'success',
             })
             getTasks()
