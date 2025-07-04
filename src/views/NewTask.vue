@@ -5,11 +5,12 @@
         <el-breadcrumb-item>新建任务</el-breadcrumb-item>
     </el-breadcrumb>
     <div style="margin:20px 0">
-        <el-alert title="可对商品或sku执行定时修改库存任务，有sku的商品只能修改各个sku的库存不能直接修改商品库存，无sku的商品可直接修改商品库存" type="info" show-icon />
+        <el-alert title="可定时对商品或sku修改库存，有sku的商品只能修改sku的库存不能直接修改商品库存，无sku的商品则直接修改商品库存" type="info" show-icon />
+        <el-alert title="商品总库存改为0后，自动下架到仓库中；仓库中的商品修改后库存大于0的话，不自动上架，如需定时上下架整个商品请用“定时上下架”功能" type="info" show-icon style="margin-top:5px;" />
     </div>
     <el-form :model="form" label-width="auto" style="max-width:1050px">
         <el-form-item label="任务名称">
-            <el-input v-model="form.name" placeholder="方便自己后期管理和识别不同任务" />
+            <el-input v-model="form.name" placeholder="方便自己管理和识别不同任务" />
         </el-form-item>
         <el-form-item label="商品或sku">
             <div style="margin-bottom:0px">
@@ -70,11 +71,11 @@
         </el-form-item>
     </el-form>
 
-    <ItemSelect ref="itemSelectRef" @get-selection-items="getSelectionItems" />
+    <ItemsSelect ref="itemSelectRef" @get-selection-items="getSelectionItems" withSku />
 </template>
 <script setup>
 import { reactive, ref, useTemplateRef, markRaw } from 'vue'
-import ItemSelect from '../components/ItemSelect.vue'
+import ItemsSelect from '../components/ItemsSelect.vue'
 import axios from 'axios'
 import qs from 'qs'
 import { CircleCheck } from '@element-plus/icons-vue'

@@ -49,9 +49,15 @@
                             <InfoFilled />
                         </el-icon>
                     </el-tooltip>
+                    <el-tooltip content="将根据重复周期自动计算下次任务执行时间"
+                        v-else-if="scope.row.repeat > 0 && scope.row.task_time < currentSystemTime">
+                        <el-icon>
+                            <InfoFilled />
+                        </el-icon>
+                    </el-tooltip>
                 </el-button>
                 <el-button size="small" type="danger" link
-                    :style="{ 'margin-left': ((scope.row.repeat == 0 && scope.row.task_time < currentSystemTime) ? 5 : 17) + 'px' }"
+                    :style="{ 'margin-left': ((scope.row.task_time < currentSystemTime) ? 5 : 17) + 'px' }"
                     @click="removeTask(scope.row.id)">删除任务</el-button>
             </template>
         </el-table-column>
