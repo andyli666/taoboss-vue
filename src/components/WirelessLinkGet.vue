@@ -5,7 +5,7 @@
         </el-input>
         <el-tabs v-model="activeTabName" @tab-change="handleTabChange">
             <el-tab-pane label="商品链接" name="itemLink">
-                <ItemSelect ref="singleTableRef" @row-click="handleItemTableRowClick" />
+                <ItemSelect @row-click="handleItemTableRowClick" ref="refItemSelect" />
             </el-tab-pane>
             <el-tab-pane label="店铺首页" name="shop">
                 <el-radio-group v-model="radioShop">
@@ -19,7 +19,9 @@
                     </el-table>
                 </el-radio-group>
             </el-tab-pane>
-            <el-tab-pane label="商品分类" name="category">商品分类</el-tab-pane>
+            <el-tab-pane label="商品分类" name="category">
+                <SellerCatSelect @row-click="handleSellerCatTableRowClick" ref="refSellerCatSelect" />
+            </el-tab-pane>
             <el-tab-pane label="新品上架" name="new">
                 <el-radio-group v-model="radioNew">
                     <el-table :data="tableDataNew" class="hide-table-header" @row-click="handleRowClickTableNew">
@@ -43,24 +45,51 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
-import axios from 'axios'
+import { ref, computed, useTemplateRef } from 'vue'
 import { useSellerStore } from '@/stores/seller'
+import { getItemWirelessUrl, getSellerCatWirelessUrl } from '../utils/index'
 
-import ItemSelect from '../components/ItemSelect.vue'
+import ItemSelect from '@/components/ItemSelect.vue'
+import SellerCatSelect from '@/components/SellerCatSelect.vue'
 
 //父组件可以控制对话框打开或关闭
 const dialogVisible = ref(false)
+const link = ref('')
 defineExpose({
-    dialogVisible
+    dialogVisible,
+    link
 })
 
 //
-const link = ref('')
+const currentItemId = ref()
+const currentShopCatCid = ref()
+const refItemSelect = useTemplateRef('refItemSelect')
+const refSellerCatSelect = useTemplateRef('refSellerCatSelect')
+//
 const activeTabName = ref('itemLink')
 const handleTabChange = (name) => {
-    console.log(name)
-    console.log(activeTabName.value)
+    switch (name) {
+        case 'new':
+            if (link.value != radioNew.value) {
+                radioNew.value = ''
+            }
+            break;
+        case 'shop':
+            if (link.value != radioShop.value) {
+                radioShop.value = ''
+            }
+            break;
+        case 'itemLink':
+            if (link.value != getItemWirelessUrl(currentItemId.value)) {
+                refItemSelect.value.clearSelect()
+            }
+            break;
+        case 'category':
+            if (link.value != getSellerCatWirelessUrl(shopId.value, sellerId.value, currentShopCatCid.value)) {
+                refSellerCatSelect.value.clearSelect()
+            }
+            break;
+    }
 }
 
 //抛出事件
@@ -72,20 +101,26 @@ const handleConfirm = () => {
 
 //对话框打开时
 const handleOpen = () => {
-    console.log('handleOpen')
+    console.log('handleOpen',link.value)
 }
 
 //单选商品点击行时
 const handleItemTableRowClick = (item) => {
-    link.value = 'https://h5.m.taobao.com/awp/core/detail.htm?id=' + item.num_iid
+    currentItemId.value = item.num_iid
+    link.value = getItemWirelessUrl(item.num_iid)
+}
+
+const shopId = ref()
+const sellerId = ref()
+//单选店铺分类点击行时
+const handleSellerCatTableRowClick = (item) => {
+    currentShopCatCid.value = item.id
+    link.value = getSellerCatWirelessUrl(shopId.value, sellerId.value, item.id)
 }
 
 //店铺首页
 const radioShop = ref()
-const tableDataShop = ref([])
-
 const handleRowClickTableShop = (row) => {
-    console.log('handleRowClickTableShop', row)
     if (row === null) {
         return
     }
@@ -95,9 +130,7 @@ const handleRowClickTableShop = (row) => {
 
 //新品链接
 const radioNew = ref()
-const tableDataNew = ref([])
 const handleRowClickTableNew = (row) => {
-    console.log('handleRowClickTableNew', row)
     if (row === null) {
         return
     }
@@ -107,16 +140,25 @@ const handleRowClickTableNew = (row) => {
 
 //订阅sellerStore
 const sellerStore = useSellerStore()
+shopId.value = sellerStore.sid
+sellerId.value = sellerStore.sellerId
 sellerStore.$subscribe(() => {
-    tableDataShop.value = [
+    shopId.value = sellerStore.sid
+    sellerId.value = sellerStore.sellerId
+})
+
+const tableDataShop = computed(() => {
+    return [
         {
-            url: `https://shop${sellerStore.sid}.m.taobao.com`,
+            url: `https://shop${shopId.value}.m.taobao.com`,
             text: '店铺首页'
         }
     ]
-    tableDataNew.value = [
+})
+const tableDataNew = computed(() => {
+    return [
         {
-            url: `https://market.m.taobao.com/apps/market/shop/newarrival.html?_w&shopId=${sellerStore.sid}&sellerId=${sellerStore.sellerId}&shop_navi=newitems&displayShopHeader=true`,
+            url: `https://market.m.taobao.com/apps/market/shop/newarrival.html?_w&shopId=${shopId.value}&sellerId=${sellerId.value}&shop_navi=newitems&displayShopHeader=true`,
             text: '新品链接'
         }
     ]

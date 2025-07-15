@@ -15,8 +15,8 @@
                     <el-splitter>
                         <el-splitter-panel>
                             <div style="margin:10px 5px 10px 0">
-                                <el-alert title="只支持图片；单张图片尺寸【宽度620~1500px，高度<2000px】，超出尺寸平台将自动裁剪以保证展示效果；
-                        拖动图片可以调整顺序；支持jpg/bmp/gif/heic/png/jpeg/webp格式，文件大小不超过5MB；最多上传5张图片。" type="info" show-icon
+                                <el-alert title="只支持图片；单张图片尺寸[宽度620~1500px，高度<2000px]，超出平台将自动裁剪以保证展示效果；
+                        拖动可调整顺序；支持jpg/bmp/gif/heic/png/jpeg/webp格式，大小不超过5MB；最多上传5张图片；图片可加跳转链接。" type="info" show-icon
                                     :closable="false" />
                             </div>
                             <el-upload ref="uploadRef" action="/api/UploadImage" v-model:file-list="fileList"
@@ -43,7 +43,7 @@
                                                 </el-icon>
                                             </span>
                                             <span class="el-upload-list__item-delete"
-                                                @click="wirelessLinkGetRef.dialogVisible = true; currentFileUid = file.uid"
+                                                @click="wirelessLinkGetRef.dialogVisible = true; wirelessLinkGetRef.link = file.link; currentFileUid = file.uid"
                                                 title="设置跳转链接">
                                                 <el-icon>
                                                     <Link />
@@ -66,7 +66,13 @@
                                 <div class="preview-content">
                                     <div class="content-banner">商品详情</div>
                                     <div class="content-container">
-                                        <div v-for="item in fileList"><img :src="item.url" width="230" /></div>
+                                        <div class="current-desc" v-show="form.position == 'bottom'">当前详情描述</div>
+                                        <div v-for="item in fileList">
+                                            <a v-if="item.link" :href="item.link" target="_blank"><img :src="item.url"
+                                                    width="230" /></a>
+                                            <img v-else :src="item.url" width="230" />
+                                        </div>
+                                        <div class="current-desc" v-show="form.position == 'top'">当前详情描述</div>
                                     </div>
                                 </div>
                             </div>
@@ -74,6 +80,12 @@
                     </el-splitter>
                 </el-tab-pane>
             </el-tabs>
+        </el-form-item>
+        <el-form-item label="发布位置">
+            <el-radio-group v-model="form.position">
+                <el-radio value="top">置顶</el-radio>
+                <el-radio value="bottom">置底</el-radio>
+            </el-radio-group>
         </el-form-item>
         <el-form-item label="发布范围">
             <div style="margin-bottom:0px;width:650px;">
@@ -84,7 +96,6 @@
                     </el-col>
                     <el-col :span="21">
                         <el-alert title="可先选择一个测试商品发布，待发布查看没问题后再增加发布到其他商品" type="info" show-icon :closable="false" />
-
                     </el-col>
                 </el-row>
             </div>
@@ -133,8 +144,8 @@
 </template>
 <script setup>
 import { reactive, ref, useTemplateRef, markRaw, onMounted } from 'vue'
-import ItemsSelect from '../../components/ItemsSelect.vue'
-import WirelessLinkGet from '../../components/WirelessLinkGet.vue'
+import ItemsSelect from '@/components/ItemsSelect.vue'
+import WirelessLinkGet from '@/components/WirelessLinkGet.vue'
 import axios from 'axios'
 import qs from 'qs'
 import { CircleCheck, Plus, Delete, ZoomIn, Link } from '@element-plus/icons-vue'
@@ -147,6 +158,7 @@ const wirelessLinkGetRef = useTemplateRef('wirelessLinkGetRef')
 // do not use same name with ref
 const form = reactive({
     name: '',
+    position: 'top',
     remark: ''
 })
 //
@@ -155,8 +167,14 @@ const activeTabName = ref('custom')
 //图片上传
 const uploadRef = useTemplateRef('uploadRef')
 const fileList = ref([{
-    name: 'food.jpeg',
-    url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
+    name: 'food1.jpeg',
+    url: 'https://img.alicdn.com/imgextra/i1/1677017006/O1CN01qRTFxY21cnu78xQWN_!!1677017006.png',
+}, {
+    name: 'food2.jpeg',
+    url: 'https://img.alicdn.com/imgextra/i4/1677017006/O1CN01ea7M4Q21cnu6mS51o_!!1677017006.png',
+}, {
+    name: 'food3.jpeg',
+    url: 'https://img.alicdn.com/imgextra/i4/1677017006/O1CN01RKXF2Q21cnu5rIPMu_!!1677017006.png',
 }])
 const dialogImageUrl = ref('')
 const dialogVisible = ref(false)
@@ -172,7 +190,7 @@ const handlePictureRemove = (uploadFile) => {
     axios.post('/api/UploadImage/removeImage', { picture_id: uploadFile.response.data.picture_id }).then(response => {
         //do nothing
     }).catch(function (error) {
-        console.log(error)
+        ElMessage.error(error)
     })
 }
 const beforePictureUpload = (rawFile) => {
@@ -205,6 +223,8 @@ const handleUploadSuccess = (response) => {
 const handleExceed = () => {
     ElMessage.error('最多上传5张图片')
 }
+
+//把获取的无线页面链接设置到fileList对应的file中
 const currentFileUid = ref()
 const getWirelessLink = (link) => {
     console.log('getWirelessLink', link)
@@ -295,7 +315,8 @@ const onSubmit = () => {
 //获取上传图片urls
 const getImageUrls = () => {
     return fileList.value.map((item) => {
-        return item.response.data.picture_path
+        // return { 'picture_path': item.response.data.picture_path, 'link': item.link }
+        return { 'picture_path': item.url, 'link': item.link }
     })
 }
 
@@ -362,6 +383,7 @@ onMounted(() => initSortable())
     overflow-x: hidden;
     overflow-y: auto;
     height: 350px;
+    border-radius: 5px;
 }
 
 .preview-content .content-container::-webkit-scrollbar {
@@ -371,6 +393,19 @@ onMounted(() => initSortable())
 
 .preview-content .content-container div {
     display: flex;
+}
+
+.preview-content .content-container a {
+    line-height: 0;
+}
+
+.preview-content .content-container .current-desc {
+    width: 230px;
+    height: 150px;
+    line-height: 150px;
+    background-color: #ccc;
+    justify-content: center;
+    color: #666;
 }
 
 :deep(.el-alert__title) {

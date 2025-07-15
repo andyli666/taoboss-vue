@@ -17,3 +17,13 @@ export const deepCopy = (obj, hash = new WeakMap()) => {
     }
     return result;
 }
+
+//获取商品的无线链接
+export const getItemWirelessUrl = (itemId) => {
+    return 'https://h5.m.taobao.com/awp/core/detail.htm?id=' + itemId
+}
+
+//获取店铺分类的无线链接
+export const getSellerCatWirelessUrl = (sid, sellerId, cid) => {
+    return `https://market.m.taobao.com/app/tb-source-app/shop-auction/pages/auction?sellerId=${sellerId}&shopId=${sid}&from=category&wirelessShopCategoryList=${cid}&wh_weex=true&wx_navbar_hidden=true&wx_navbar_transparent=true`
+}

@@ -75,7 +75,7 @@
 </template>
 <script setup>
 import { reactive, ref, useTemplateRef, markRaw } from 'vue'
-import ItemsSelect from '../components/ItemsSelect.vue'
+import ItemsSelect from '@/components/ItemsSelect.vue'
 import axios from 'axios'
 import qs from 'qs'
 import { CircleCheck } from '@element-plus/icons-vue'

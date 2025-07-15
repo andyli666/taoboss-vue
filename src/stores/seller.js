@@ -6,6 +6,7 @@ export const useSellerStore = defineStore('seller', () => {
     const sid = ref()
     const sellerNick = ref('')
     const sellerId = ref()
+    const isLoggedIn = ref(false)
     async function fetchData() {
         try {
             const response = await axios.get('/api/TopPublicShopSellerGetRequest')
@@ -21,5 +22,9 @@ export const useSellerStore = defineStore('seller', () => {
         }
     }
 
-    return { sid, sellerNick, sellerId, fetchData }
+    return { sid, sellerNick, sellerId, isLoggedIn, fetchData }
+}, {
+    persist: {
+        storage: sessionStorage
+    }
 })

@@ -57,19 +57,17 @@ const form = reactive({
 const radio = ref()
 
 const getItems = () => {
-    // axios.post('/item/getItems', {
-    axios.post('/api/Item/getItems/?test=1', {
+    axios.post('/api/Item/getItems', {
         title_contains: form.title,
         approve_status: form.approveStatus,
         page: currentPage.value,
         rows: pageSize.value,
         pagination: 1//远程分页
     }).then(response => {
-        // tableData.value = formatItems(response.data.rows)
         tableData.value = response.data.rows
         total.value = response.data.total
     }).catch(function (error) {
-        console.log(error)
+        ElMessage.error(error)
     })
 }
 const handleCurrentChange = (val) => {
@@ -77,40 +75,35 @@ const handleCurrentChange = (val) => {
     getItems()
 }
 const handleSizeChange = (val) => {
-    console.log(`${val} items per page`)
     getItems()
 }
 
-// const formatItems = (items) => {
-//     const newItems = []
-//     items.forEach(item => {
-//         item.wirelessUrl = 'https://h5.m.taobao.com/awp/core/detail.htm?id=' + item.num_iid // 表格row-key用
-//         newItems.push(item)
-//     })
-//     return newItems
-// }
-
 const emit = defineEmits(['selection-item-change', 'row-click'])
 const handleCurrentRowChange = (row) => {
-    console.log('handleCurrentRowChange', row)
     if (row === null) {
         return
     }
     currentRow.value = row
     radio.value = row.num_iid
-    // radio.value = val.wirelessUrl
-    // console.log(val.wirelessUrl)
     emit('selection-item-change', currentRow.value)
 }
 const handleRowClick = (row) => {
-    console.log('handleRowClick', row)
     if (row === null) {
         return
     }
+    radio.value = row.num_iid
     emit('row-click', row)
 }
 
-//
+
+const clearSelect = () => {
+    radio.value = ''
+}
+defineExpose({
+    clearSelect
+})
+
+
 onMounted(() => getItems())
 </script>
 <style scoped>

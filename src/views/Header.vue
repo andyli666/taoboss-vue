@@ -1,11 +1,16 @@
 <template>
     <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" background-color="#545c64"
         text-color="#fff" active-text-color="#ffd04b" @select="handleSelect" router>
-        <el-menu-item index="1">Processing Center</el-menu-item>
+        <el-menu-item index="/">首页</el-menu-item>
         <el-sub-menu index="5">
             <template #title>关联推荐</template>
             <el-menu-item index="/related-recommendations/new">新建活动</el-menu-item>
-            <el-menu-item index="5-2">活动列表</el-menu-item>
+            <el-menu-item index="/related-recommendations/list">活动列表</el-menu-item>
+        </el-sub-menu>
+        <el-sub-menu index="6">
+            <template #title>定时修改库存</template>
+            <el-menu-item index="/item-timing-update-quantity/new">新建任务</el-menu-item>
+            <el-menu-item index="/item-timing-update-quantity/list">任务列表</el-menu-item>
         </el-sub-menu>
         <el-sub-menu index="2">
             <template #title>Workspace</template>
@@ -25,10 +30,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import { useSellerStore } from '@/stores/seller'
 
-const activeIndex = ref('1')
+const route = useRoute()
+const activeIndex = computed(() => {
+    return route.path
+})
+
 const handleSelect = (key, keyPath) => {
     console.log(key, keyPath)
 }
@@ -36,6 +46,8 @@ const handleSelect = (key, keyPath) => {
 const store = useSellerStore()
 
 onMounted(() => {
-    store.fetchData()
+    console.log('mounted')
+    console.log('store.isLoggedIn', store.isLoggedIn, store)
+    store.isLoggedIn && !store.sellerNick && store.fetchData()
 })
 </script>

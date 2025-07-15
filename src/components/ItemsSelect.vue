@@ -6,7 +6,8 @@
                 <el-input v-model="form.title" clearable @keyup.enter="getItems" />
             </el-form-item>
             <el-form-item label="上架状态">
-                <el-select v-model="form.approveStatus" placeholder="" clearable>
+                <el-select v-model="form.approveStatus">
+                    <el-option label="全部" value="0" />
                     <el-option label="出售中" value="onsale" />
                     <el-option label="仓库中" value="instock" />
                 </el-select>
@@ -17,14 +18,16 @@
         </el-form>
         <el-table :data="tableData" :tree-props="treeProps" row-key="id" ref="multipleTableRef">
             <el-table-column type="selection" width="55" :reserve-selection="true" />
-            <el-table-column property="num_iid" label="ID" width="150" />
             <el-table-column property="pic_url" label="主图" width="100">
                 <template #default="scope">
+                    <a :href="getItemWirelessUrl(scope.row.num_iid)" target="_blank">
                     <el-image :src="scope.row.pic_url" style="width: 50px;">
                         <template #error>&nbsp;</template>
                     </el-image>
+                    </a>
                 </template>
             </el-table-column>
+            <el-table-column property="num_iid" label="ID" width="150" />
             <el-table-column property="title" label="标题" />
         </el-table>
         <el-pagination @current-change="handleCurrentChange" @size-change="handleSizeChange" :current-page="currentPage"
@@ -47,6 +50,7 @@
 import { reactive, ref } from 'vue'
 import axios from 'axios'
 import { deepCopy } from '../utils/index'
+import { getItemWirelessUrl } from '../utils/index'
 
 const dialogVisible = ref(false)
 const tableData = ref([])
@@ -68,7 +72,7 @@ const formLabelWidth = '100px'
 
 const form = reactive({
     title: '',
-    approveStatus: '',
+    approveStatus: '0',
 })
 
 const props = defineProps({
@@ -76,8 +80,7 @@ const props = defineProps({
 })
 
 const getItems = () => {
-    // axios.post('/item/getItems', {
-    axios.post('/api/Item/getItems/?test=1', {
+    axios.post('/api/Item/getItems', {
         title_contains: form.title,
         approve_status: form.approveStatus,
         page: currentPage.value,
@@ -211,6 +214,6 @@ const getParent = (parent_id) => {
 }
 
 .dialog-footer {
-    padding-right: 34px;
+    padding-right: 15px;
 }
 </style>
