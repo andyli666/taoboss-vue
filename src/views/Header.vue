@@ -1,5 +1,5 @@
 <template>
-    <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" background-color="#545c64"
+    <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" background-color="#4285f4"
         text-color="#fff" active-text-color="#ffd04b" @select="handleSelect" router>
         <el-menu-item index="/">首页</el-menu-item>
         <el-sub-menu index="5">

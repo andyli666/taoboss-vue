@@ -10,34 +10,39 @@ export const router = createRouter({
             path: '/item-timing-update-quantity/',
             children: [
                 {
-                    path: 'new', components: {
+                    path: 'new',
+                    components: {
                         default: () => import('./views/item-timing-update-quantity/NewTask.vue'),
                         aside: () => import('./views/item-timing-update-quantity/Aside.vue')
                     }
                 },
                 {
-                    path: 'list', components: {
+                    path: 'list',
+                    components: {
                         default: () => import('./views/item-timing-update-quantity/TaskList.vue'),
                         aside: () => import('./views/item-timing-update-quantity/Aside.vue')
                     }
                 }
             ]
         },
-
         {
             path: '/related-recommendations/',
             children: [
                 {
-                    path: 'new', components: {
+                    path: 'new',
+                    components: {
                         default: () => import('./views/related-recommendations/New.vue'),
                         aside: () => import('./views/related-recommendations/Aside.vue')
                     }
                 },
                 {
-                    path: 'list', components: {
+                    path: 'list/:publishDetailPopupId(\\d+)?',
+                    name: 'related-recommendations-list',
+                    components: {
                         default: () => import('./views/related-recommendations/List.vue'),
                         aside: () => import('./views/related-recommendations/Aside.vue')
-                    }
+                    },
+                    props: { default: true, aside: false }
                 }
             ]
         },

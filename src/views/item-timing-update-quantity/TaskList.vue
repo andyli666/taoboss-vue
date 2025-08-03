@@ -13,8 +13,8 @@
         </el-form-item>
     </el-form>
     <el-table :data="tableData" row-key="id">
-        <el-table-column type="index" width="55" label="序号" />
-        <el-table-column property="task_name" label="名称" width="300" />
+        <!-- <el-table-column type="index" width="55" label="序号" :index="indexMethod" /> -->
+        <el-table-column property="task_name" label="名称" width="350" />
         <el-table-column property="task_time" label="任务执行时间" width="200" />
         <el-table-column property="repeat" label="是否重复" width="100">
             <template #default="scope">
@@ -83,6 +83,7 @@ import { reactive, ref, onMounted, useTemplateRef } from 'vue'
 import axios from 'axios'
 import TaskDetail from './TaskDetail.vue'
 import { InfoFilled } from '@element-plus/icons-vue'
+// import { useIndexMethod } from '@/composables/useIndexMethod'
 
 const tableData = ref([])
 const currentPage = ref(1)
@@ -106,8 +107,8 @@ const getTasks = () => {
         tableData.value = response.data.rows
         total.value = response.data.total
         currentSystemTime.value = response.data.time
-    }).catch(function (error) {
-        console.log(error)
+    }).catch((error) => {
+        ElMessage.error(error)
     })
 }
 const handleCurrentChange = (val) => {
@@ -138,8 +139,8 @@ const doCancelTask = (id) => {
         } else {
             ElMessage.error(response.data.info)
         }
-    }).catch(function (error) {
-        console.log(error)
+    }).catch((error) => {
+        ElMessage.error(error)
     })
 }
 
@@ -163,8 +164,8 @@ const doRestartTask = (id) => {
         } else {
             ElMessage.error(response.data.info)
         }
-    }).catch(function (error) {
-        console.log(error)
+    }).catch((error) => {
+        ElMessage.error(error)
     })
 }
 
@@ -188,8 +189,13 @@ const doRemoveTask = (id) => {
         } else {
             ElMessage.error(response.data.info)
         }
-    }).catch(function (error) {
-        console.log(error)
+    }).catch((error) => {
+        ElMessage.error(error)
     })
 }
+
+// const indexMethod = (index) => {
+//   const { newIndex } = useIndexMethod(index, currentPage, pageSize)
+//   return newIndex.value
+// }
 </script>

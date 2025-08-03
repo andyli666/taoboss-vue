@@ -66,7 +66,7 @@ const login = () => {
         } else {
             ElMessage.error(response.data.msg)
         }
-    }).catch(function (error) {
+    }).catch((error) => {
         ElMessage.error(error)
     })
 }

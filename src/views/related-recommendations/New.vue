@@ -135,20 +135,23 @@
             <el-input v-model="form.remark" type="textarea" />
         </el-form-item>
         <el-form-item>
-            <el-button type="primary" @click="onSubmit" :disabled="submitBtnDisabled">创建并发布</el-button>
+            <el-button type="primary" @click="onSubmit" :disabled="submitBtnDisabled">保存并发布</el-button>
         </el-form-item>
     </el-form>
 
     <ItemsSelect ref="itemSelectRef" @get-selection-items="getSelectionItems" />
     <WirelessLinkGet ref="wirelessLinkGetRef" @get-wireless-link="getWirelessLink" />
+    <el-dialog v-model="dialogProgressVisible" :title="dialogProgressTitle" width="800">
+        <el-progress :text-inside="true" :stroke-width="26" :percentage="publishPercentage" />
+    </el-dialog>
 </template>
 <script setup>
-import { reactive, ref, useTemplateRef, markRaw, onMounted } from 'vue'
+import { reactive, ref, useTemplateRef, markRaw, onMounted, computed } from 'vue'
 import ItemsSelect from '@/components/ItemsSelect.vue'
 import WirelessLinkGet from '@/components/WirelessLinkGet.vue'
 import axios from 'axios'
 import qs from 'qs'
-import { CircleCheck, Plus, Delete, ZoomIn, Link } from '@element-plus/icons-vue'
+import { CircleCheck, Plus, Delete, Link } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router'
 import Sortable from 'sortablejs'
 
@@ -166,16 +169,17 @@ const activeTabName = ref('custom')
 
 //图片上传
 const uploadRef = useTemplateRef('uploadRef')
-const fileList = ref([{
-    name: 'food1.jpeg',
-    url: 'https://img.alicdn.com/imgextra/i1/1677017006/O1CN01qRTFxY21cnu78xQWN_!!1677017006.png',
-}, {
-    name: 'food2.jpeg',
-    url: 'https://img.alicdn.com/imgextra/i4/1677017006/O1CN01ea7M4Q21cnu6mS51o_!!1677017006.png',
-}, {
-    name: 'food3.jpeg',
-    url: 'https://img.alicdn.com/imgextra/i4/1677017006/O1CN01RKXF2Q21cnu5rIPMu_!!1677017006.png',
-}])
+const fileList = ref([])
+// const fileList = ref([{
+//     name: 'food1.jpeg',
+//     url: 'https://img.alicdn.com/imgextra/i1/1677017006/O1CN01qRTFxY21cnu78xQWN_!!1677017006.png',
+// }, {
+//     name: 'food2.jpeg',
+//     url: 'https://img.alicdn.com/imgextra/i4/1677017006/O1CN01ea7M4Q21cnu6mS51o_!!1677017006.png',
+// }, {
+//     name: 'food3.jpeg',
+//     url: 'https://img.alicdn.com/imgextra/i4/1677017006/O1CN01RKXF2Q21cnu5rIPMu_!!1677017006.png',
+// }])
 const dialogImageUrl = ref('')
 const dialogVisible = ref(false)
 const handlePictureCardPreview = (uploadFile) => {
@@ -189,7 +193,7 @@ const handlePictureRemove = (uploadFile) => {
     //远程删除
     axios.post('/api/UploadImage/removeImage', { picture_id: uploadFile.response.data.picture_id }).then(response => {
         //do nothing
-    }).catch(function (error) {
+    }).catch((error) => {
         ElMessage.error(error)
     })
 }
@@ -276,50 +280,102 @@ const onSubmit = () => {
         ElMessage.error('发布范围不能为空')
         return
     }
-    console.log(formData)
-    return
+    // console.log(formData)
+    // return
     submitBtnDisabled.value = true
     //表单+表格数据一起传送必须用qs.stringify方法
-    axios.post('/api/RelatedRecommendations/new', qs.stringify(formData)).then(response => {
-        submitBtnDisabled.value = false
+    axios.post('/api/RelatedRecommendations/newActivity', qs.stringify(formData)).then(response => {
         if (response.data.status) {
-            ElMessageBox.alert(
-                '创建成功',
-                '提示',
-                {
-                    type: 'success',
-                    icon: markRaw(CircleCheck),
-                    callback: (action) => {
-                        //查询发布进度
-                        ElMessage({
-                            type: 'info',
-                            message: `action: ${action}`,
-                        })
-                        router.push('/related-recommendations/new')
-                    },
-                }
-            )
-        } else {
+            let activityId = response.data.id
             ElMessage({
-                showClose: true,
-                message: response.data.info,
-                duration: 5000,
-                type: 'error'
+                message: '活动保存成功，即将进行发布，请稍等',
+                type: 'success',
+                onClose: () => {
+                    publishActivityBatch(activityId)
+                    submitBtnDisabled.value = false
+                }
             })
+        } else {
+            ElMessageBox.alert(response.data.msg, '提示', { type: 'warning' })
         }
-    }).catch(function (error) {
+    }).catch((error) => {
         submitBtnDisabled.value = false
-        console.log(error)
+        ElMessage.error(error)
     })
 }
 //获取上传图片urls
 const getImageUrls = () => {
     return fileList.value.map((item) => {
-        // return { 'picture_path': item.response.data.picture_path, 'link': item.link }
-        return { 'picture_path': item.url, 'link': item.link }
+        return { 'picture_path': item.response.data.picture_path, 'link': item.link }
+        // return { 'picture_path': item.url, 'link': item.link }
     })
 }
 
+//批量发布
+const publishActivityBatch = (activityId) => {
+    axios.post('/api/RelatedRecommendations/publishActivityBatch', { activityId }).then(response => {
+        if (!response.data.status) {
+            getPublishProgress(activityId)
+        } else {
+            ElMessageBox.alert(response.data.msg, '提示', { type: 'warning' })
+        }
+    }).catch((error) => {
+        ElMessage.error(error)
+    })
+}
+
+//查询发布进度
+const dialogProgressVisible = ref(false)
+const publishPercentage = ref(0)
+const total = ref(0)
+const success = ref(0)
+const failure = ref(0)
+const dialogProgressTitle = computed(() => {
+    return `发布进度（共${total.value}个，已发布${success.value + failure.value}个，待发布${total.value - success.value - failure.value}个）`
+})
+//
+const getPublishProgress = (activityId) => {
+    let intervalId = setInterval(() => {
+        axios.post('/api/RelatedRecommendations/getPublishPercentage', { activityId }).then(response => {
+            if (response.data.status) {
+                if (!dialogProgressVisible.value) {
+                    dialogProgressVisible.value = true
+                }
+                publishPercentage.value = response.data.data.percentage
+                total.value = response.data.data.total
+                success.value = response.data.data.success
+                failure.value = response.data.data.failure
+                if (response.data.data.percentage >= 100) {
+                    clearInterval(intervalId)
+                    setTimeout(() => {
+                        dialogProgressVisible.value = false
+                    }, 3000);
+                    let message = `发布成功，其中成功${response.data.data.success}个，出错${response.data.data.failure}个。`
+                    if (response.data.data.failure > 0) {
+                        message += '点击“确定”按钮将跳转到发布详情页面，可查询具体出错信息'
+                    }
+                    ElMessageBox.alert(
+                        message,
+                        '提示',
+                        {
+                            type: 'success',
+                            icon: markRaw(CircleCheck),
+                            callback: () => {
+                                router.push({ name: 'related-recommendations-list', params: { publishDetailPopupId: activityId } })
+                            }
+                        }
+                    )
+                }
+            } else {
+                ElMessageBox.alert(response.data.msg, '提示', { type: 'warning' })
+                clearInterval(intervalId)
+            }
+        }).catch((error) => {
+            ElMessage.error(error)
+            clearInterval(intervalId)
+        })
+    }, 1000)
+}
 
 //上传图片排序
 const initSortable = () => {

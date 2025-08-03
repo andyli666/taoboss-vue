@@ -66,7 +66,7 @@ const getItems = () => {
     }).then(response => {
         tableData.value = response.data.rows
         total.value = response.data.total
-    }).catch(function (error) {
+    }).catch((error) => {
         ElMessage.error(error)
     })
 }

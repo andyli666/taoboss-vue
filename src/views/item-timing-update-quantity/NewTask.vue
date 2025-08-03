@@ -128,9 +128,9 @@ const onSubmit = () => {
                 type: 'error'
             })
         }
-    }).catch(function (error) {
+    }).catch((error) => {
         submitBtnDisabled.value = false
-        console.log(error)
+         ElMessage.error(error)
     })
 }
 

@@ -28,7 +28,7 @@ const getSellerCats = () => {
         } else {
             tableData.value = response.data
         }
-    }).catch(function (error) {
+    }).catch((error) => {
         ElMessage.error(error)
     })
 }

@@ -21,9 +21,9 @@
             <el-table-column property="pic_url" label="主图" width="100">
                 <template #default="scope">
                     <a :href="getItemWirelessUrl(scope.row.num_iid)" target="_blank">
-                    <el-image :src="scope.row.pic_url" style="width: 50px;">
-                        <template #error>&nbsp;</template>
-                    </el-image>
+                        <el-image :src="scope.row.pic_url" style="width: 50px;">
+                            <template #error>&nbsp;</template>
+                        </el-image>
                     </a>
                 </template>
             </el-table-column>
@@ -47,7 +47,7 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 import axios from 'axios'
 import { deepCopy } from '../utils/index'
 import { getItemWirelessUrl } from '../utils/index'
@@ -90,8 +90,8 @@ const getItems = () => {
     }).then(response => {
         tableData.value = formatItems(response.data.rows)
         total.value = response.data.total
-    }).catch(function (error) {
-        console.log(error)
+    }).catch((error) => {
+         ElMessage.error(error)
     })
 }
 const handleCurrentChange = (val) => {
@@ -203,6 +203,11 @@ const getParent = (parent_id) => {
         }
     }
 }
+
+//
+onMounted(() => {
+    getItems()
+})
 </script>
 <style scoped>
 .item-search-form .el-select {

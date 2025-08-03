@@ -2,7 +2,7 @@
     <el-dialog v-model="dialogVisible" title="任务执行明细" width="1000">
         <el-form :inline="true" :model="form" @submit.prevent size="small">
             <el-form-item label="商品">
-                <el-input v-model="form.title" clearable @keyup.enter="getDetail" placeholder="商品ID或标题" />
+                <el-input v-model="form.title" clearable @keyup.enter="getDetail" placeholder="商品ID或标题" style="width: 200px" />
             </el-form-item>
             <!-- <el-form-item label="sku">
                 <el-input v-model="form.sku_title" clearable @keyup.enter="getDetail" placeholder="skuID或名称" />
@@ -78,8 +78,8 @@ const getDetail = () => {
             } else {
                 ElMessage.error(response.data.info)
             }
-        }).catch(function (error) {
-            console.log(error)
+        }).catch((error) => {
+             ElMessage.error(error)
         })
     }
 }
