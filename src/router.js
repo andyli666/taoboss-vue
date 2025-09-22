@@ -1,8 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-// import NewTask from './views/NewTask.vue'
-// import TaskList from './views/TaskList.vue'
-// import RelatedRecommendations from './views/related-recommendations/New.vue'
-
 export const router = createRouter({
     history: createWebHistory(),
     routes: [
@@ -26,24 +22,103 @@ export const router = createRouter({
             ]
         },
         {
-            path: '/related-recommendations/',
+            path: '/recommend/',
             children: [
                 {
                     path: 'new',
                     components: {
-                        default: () => import('./views/related-recommendations/New.vue'),
-                        aside: () => import('./views/related-recommendations/Aside.vue')
+                        default: () => import('./views/recommend/New.vue'),
+                        aside: () => import('./views/recommend/Aside.vue')
                     }
                 },
                 {
-                    path: 'list/:publishDetailPopupId(\\d+)?',
-                    name: 'related-recommendations-list',
+                    path: 'list',
+                    name: 'recommend-list',
                     components: {
-                        default: () => import('./views/related-recommendations/List.vue'),
-                        aside: () => import('./views/related-recommendations/Aside.vue')
-                    },
-                    props: { default: true, aside: false }
+                        default: () => import('./views/recommend/List.vue'),
+                        aside: () => import('./views/recommend/Aside.vue')
+                    }
+                },
+                {
+                    path: 'edit/:id',
+                    name: 'recommend-edit',
+                    components: {
+                        default: () => import('./views/recommend/Edit.vue'),
+                        aside: () => import('./views/recommend/Aside.vue')
+                    }
+                },
+                {
+                    path: 'banner',
+                    name: 'recommend-bannner',
+                    components: {
+                        default: () => import('./views/recommend/Banner.vue'),
+                        aside: () => import('./views/recommend/Aside.vue')
+                    }
                 }
+            ]
+        },
+        {
+            path: '/finance/',
+            children: [
+                {
+                    path: 'profit',
+                    components: {
+                        default: () => import('./views/finance/Profit.vue'),
+                        aside: () => import('./views/finance/Aside.vue')
+                    }
+                },
+                {
+                    path: 'costprice',
+                    components: {
+                        default: () => import('./views/finance/CostPriceSet.vue'),
+                        aside: () => import('./views/finance/Aside.vue')
+                    }
+                }
+            ]
+        },
+        {
+            path: '/delist-optimize/',
+            children: [
+                {
+                    path: 'new',
+                    components: {
+                        default: () => import('./views/delist-optimize/New.vue'),
+                        aside: () => import('./views/delist-optimize/Aside.vue')
+                    }
+                },
+                {
+                    path: 'list',
+                    components: {
+                        default: () => import('./views/delist-optimize/List.vue'),
+                        aside: () => import('./views/delist-optimize/Aside.vue')
+                    }
+                }
+            ]
+        },
+        {
+            path: '/widget/',
+            children: [
+                {
+                    path: 'blacklist',
+                    components: {
+                        default: () => import('./views/widget/Blacklist.vue'),
+                        aside: () => import('./views/widget/Aside.vue')
+                    }
+                },
+                {
+                    path: 'rate-auto-reply',
+                    components: {
+                        default: () => import('./views/widget/RateAutoReply.vue'),
+                        aside: () => import('./views/widget/Aside.vue')
+                    }
+                },
+                {
+                    path: 'profit-calc',
+                    components: {
+                        default: () => import('./views/widget/ProfitCalc.vue'),
+                        aside: () => import('./views/widget/Aside.vue')
+                    }
+                },
             ]
         },
         {
@@ -51,6 +126,25 @@ export const router = createRouter({
                 hideLayout: true
             }
         },
-        { path: '/', redirect: '/login' }
+        {
+            path: '/auth', name: 'auth', component: () => import('./views/Auth.vue'), meta: {
+                hideLayout: true
+            }
+        },
+        { path: '/', redirect: '/index' },
+        // { path: '/', redirect: '/recommend/list' },
+        // {
+        //     path: '/index', name: 'index', component: () => import('./views/Index.vue')
+        // },
+        {
+            path: '/index', name: 'index', component: () => import('./views/Index.vue'), meta: {
+                hideAside: true
+            }
+        },
+        {
+            path: '/callback', name: 'callback', component: () => import('./views/Callback.vue'), meta: {
+                hideLayout: true
+            }
+        }
     ],
 })

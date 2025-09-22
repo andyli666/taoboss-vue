@@ -1,8 +1,9 @@
 <template>
     <el-dialog v-model="dialogVisible" title="任务执行明细" width="1000">
-        <el-form :inline="true" :model="form" @submit.prevent size="small">
+        <el-form :inline="true" :model="form" @submit.prevent size="small" style="max-width:1050px">
             <el-form-item label="商品">
-                <el-input v-model="form.title" clearable @keyup.enter="getDetail" placeholder="商品ID或标题" style="width: 200px" />
+                <el-input v-model="form.title" clearable @keyup.enter="getDetail" placeholder="商品ID或标题"
+                    style="width: 200px" />
             </el-form-item>
             <!-- <el-form-item label="sku">
                 <el-input v-model="form.sku_title" clearable @keyup.enter="getDetail" placeholder="skuID或名称" />
@@ -13,13 +14,19 @@
         </el-form>
         <el-table :data="tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)" size="small">
             <!-- <el-table-column type="index" width="55" label="序号" /> -->
-            <el-table-column property="pic_url" label="商品" width="300">
+            <el-table-column property="pic_url" label="商品" width="350">
                 <template #default="scope">
-                    <el-image :src="scope.row.pic_url" style="width:50px">
-                        <template #error>&nbsp;</template>
-                    </el-image>
-                    [{{ scope.row.num_iid }}]
-                    {{ scope.row.title }}
+                    <el-row>
+                        <el-col :span="4">
+                            <el-image :src="scope.row.pic_url" style="width:50px">
+                                <template #error>&nbsp;</template>
+                            </el-image>
+                        </el-col>
+                        <el-col :span="20">
+                            [{{ scope.row.num_iid }}]
+                            {{ scope.row.title }}
+                        </el-col>
+                    </el-row>
                 </template>
             </el-table-column>
             <el-table-column property="properties_name" label="sku" width="200">
@@ -50,7 +57,7 @@
 </template>
 <script setup>
 import { ref, watch, reactive } from 'vue'
-import axios from 'axios'
+import request from '@/utils/request'
 
 const tableData = ref([])
 const currentPage = ref(1)
@@ -69,7 +76,7 @@ const form = reactive({
 
 const getDetail = () => {
     if (taskId) {
-        axios.post('/api/ItemTimingUpdateQuantity/getDetails', {
+        request.post('/api/item-timing-update-quantity/get-details', {
             id: taskId,
             title: form.title
         }).then(response => {
@@ -79,7 +86,7 @@ const getDetail = () => {
                 ElMessage.error(response.data.info)
             }
         }).catch((error) => {
-             ElMessage.error(error)
+            ElMessage.error(error)
         })
     }
 }

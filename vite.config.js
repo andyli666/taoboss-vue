@@ -27,7 +27,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://glyx.taoboss.com.cn',  // 后端API地址
+        target: 'https://api.taoboss.com.cn/',  // 后端API地址
         changeOrigin: true,  // 是否修改请求头中的Origin
         rewrite: (path) => path.replace(/^\/api/, ''), // 重写路径
       },

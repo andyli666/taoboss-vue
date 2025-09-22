@@ -15,14 +15,14 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
+import request from '@/utils/request'
 
 const tableData = ref([])
 
-const radio = ref()
+const radio = ref('')
 
 const getSellerCats = () => {
-    axios.post('/api/Item/sellercatsListGet', { with_root: 0 }).then(response => {
+    request.post('/api/item/sellercats-list-get', { with_root: 0 }).then(response => {
         if (response.data.msg !== undefined) {
             ElMessage.error(`获取店铺分类出错：${response.data.msg}`)
         } else {
@@ -45,8 +45,10 @@ const handleRowClick = (row) => {
 const clearSelect = () => {
     radio.value = ''
 }
+
 defineExpose({
-    clearSelect
+    clearSelect,
+    radio
 })
 
 //

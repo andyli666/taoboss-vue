@@ -1,5 +1,6 @@
 <template>
-    <el-dialog v-model="dialogVisible" title="获取无线页面链接" width="850" :close-on-click-modal="false" @open="handleOpen">
+    <el-dialog v-model="dialogVisible" title="获取无线页面链接" width="850" :close-on-click-modal="false"
+        @opened="handleOpened">
         <el-input v-model="link" class="link-input">
             <template #prepend>链接：</template>
         </el-input>
@@ -45,7 +46,7 @@
 </template>
 
 <script setup>
-import { ref, computed, useTemplateRef } from 'vue'
+import { ref, computed, useTemplateRef, nextTick } from 'vue'
 import { useSellerStore } from '@/stores/seller'
 import { getItemWirelessUrl, getSellerCatWirelessUrl } from '../utils/index'
 
@@ -99,9 +100,55 @@ const handleConfirm = () => {
     emit('get-wireless-link', link.value.trim())
 }
 
-//对话框打开时
-const handleOpen = () => {
-    console.log('handleOpen',link.value)
+//对话框打开后自动选择
+const handleOpened = () => {
+    if (link.value.startsWith('https://market.m.taobao.com/app/tb-source-app')) {
+        //商品分类
+        const urlParams = new URLSearchParams(link.value)
+        const cid = urlParams.get('wirelessShopCategoryList')
+        if (activeTabName.value != 'category') {
+            activeTabName.value = 'category'
+            //自动选择
+            nextTick(() => {
+                refSellerCatSelect.value.radio = cid
+            })
+        } else {
+            refSellerCatSelect.value.radio = cid
+        }
+    } else if (link.value.startsWith('https://h5.m.taobao.com')) {
+        //商品链接
+        const url = new URL(link.value)
+        const urlParams = new URLSearchParams(url.searchParams)
+        const num_iid = urlParams.get('id')
+        if (activeTabName.value != 'itemLink') {
+            activeTabName.value = 'itemLink'
+            nextTick(() => {
+                refItemSelect.value.radio = num_iid
+            })
+        } else {
+            refItemSelect.value.radio = num_iid
+        }
+    } else if (link.value.startsWith('https://shop')) {
+        //店铺首页
+        if (activeTabName.value != 'shop') {
+            activeTabName.value = 'shop'
+            nextTick(() => {
+                radioShop.value = link.value
+            })
+        } else {
+            radioShop.value = link.value
+        }
+    } else if (link.value.startsWith('https://market.m.taobao.com/apps/market')) {
+        //新品上架
+        if (activeTabName.value != 'new') {
+            activeTabName.value = 'new'
+            nextTick(() => {
+                radioNew.value = link.value
+            })
+        } else {
+            radioNew.value = link.value
+        }
+    }
 }
 
 //单选商品点击行时

@@ -1,9 +1,9 @@
 <template>
   <el-menu :default-active="activeIndex" class="el-menu-aside" :default-openeds="['1']" router>
     <el-sub-menu index="1">
-      <template #title>关联推荐</template>
-      <el-menu-item index="/related-recommendations/new">新建活动</el-menu-item>
-      <el-menu-item index="/related-recommendations/list">活动列表</el-menu-item>
+      <template #title>财务</template>
+      <el-menu-item index="/finance/profit">利润分析</el-menu-item>
+      <el-menu-item index="/finance/costprice">成本价设置</el-menu-item>
     </el-sub-menu>
   </el-menu>
 </template>

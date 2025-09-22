@@ -1,6 +1,6 @@
 <template>
     <!-- <el-config-provider size="small"> -->
-    <el-form :inline="true" :model="form" class="item-search-form" @submit.prevent>
+    <el-form :inline="true" :model="form" class="item-search-form" @submit.prevent style="width:100%">
         <el-form-item label="关键词或id">
             <el-input v-model="form.title" clearable @keyup.enter="getItems" />
         </el-form-item>
@@ -42,7 +42,7 @@
 
 <script setup>
 import { reactive, ref, onMounted } from 'vue'
-import axios from 'axios'
+import request from '@/utils/request'
 
 const tableData = ref([])
 const currentPage = ref(1)
@@ -57,7 +57,7 @@ const form = reactive({
 const radio = ref()
 
 const getItems = () => {
-    axios.post('/api/Item/getItems', {
+    request.post('/api/item/get-items', {
         title_contains: form.title,
         approve_status: form.approveStatus,
         page: currentPage.value,
@@ -100,7 +100,8 @@ const clearSelect = () => {
     radio.value = ''
 }
 defineExpose({
-    clearSelect
+    clearSelect,
+    radio
 })
 
 

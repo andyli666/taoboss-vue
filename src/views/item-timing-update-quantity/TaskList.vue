@@ -4,7 +4,7 @@
         <el-breadcrumb-item>定时修改库存 </el-breadcrumb-item>
         <el-breadcrumb-item>任务列表</el-breadcrumb-item>
     </el-breadcrumb>
-    <el-form :inline="true" :model="form" @submit.prevent style="margin:20px 0">
+    <el-form :inline="true" :model="form" @submit.prevent style="margin:20px 0;max-width:1050px">
         <el-form-item label="任务名称">
             <el-input v-model="form.task_name" clearable @keyup.enter="getTasks" />
         </el-form-item>
@@ -14,9 +14,9 @@
     </el-form>
     <el-table :data="tableData" row-key="id">
         <!-- <el-table-column type="index" width="55" label="序号" :index="indexMethod" /> -->
-        <el-table-column property="task_name" label="名称" width="350" />
-        <el-table-column property="task_time" label="任务执行时间" width="200" />
-        <el-table-column property="repeat" label="是否重复" width="100">
+        <el-table-column property="task_name" label="名称" width="300" />
+        <el-table-column property="task_time" label="任务执行时间" width="170" />
+        <el-table-column property="repeat" label="是否重复" width="80">
             <template #default="scope">
                 <div v-if="scope.row.repeat == 0">否</div>
                 <div v-else-if="scope.row.repeat == 1">每天</div>
@@ -25,7 +25,7 @@
                 <div v-else-if="scope.row.repeat == 4">周末</div>
             </template>
         </el-table-column>
-        <el-table-column property="status" label="任务状态" width="100">
+        <el-table-column property="status" label="任务状态" width="80">
             <template #default="scope">
                 <div v-if="scope.row.status == 0">待执行</div>
                 <div v-else-if="scope.row.status == 1">已完成</div>
@@ -80,7 +80,7 @@
 </template>
 <script setup>
 import { reactive, ref, onMounted, useTemplateRef } from 'vue'
-import axios from 'axios'
+import request from '@/utils/request'
 import TaskDetail from './TaskDetail.vue'
 import { InfoFilled } from '@element-plus/icons-vue'
 // import { useIndexMethod } from '@/composables/useIndexMethod'
@@ -99,7 +99,7 @@ const getTaskDetailRef = useTemplateRef('getTaskDetailRef')
 const currentTaskId = ref(0)
 
 const getTasks = () => {
-    axios.post('/api/ItemTimingUpdateQuantity/getTasks', {
+    request.post('/api/item-timing-update-quantity/get-tasks', {
         task_name: form.task_name,
         page: currentPage.value,
         page_size: pageSize.value
@@ -127,7 +127,7 @@ const cancelTask = (id) => {
         }).catch(() => { })
 }
 const doCancelTask = (id) => {
-    axios.post('/api/ItemTimingUpdateQuantity/cancelTask', {
+    request.post('/api/item-timing-update-quantity/cancel-task', {
         id
     }).then(response => {
         if (response.data.status == 1) {
@@ -152,7 +152,7 @@ const restartTask = (id) => {
 }
 
 const doRestartTask = (id) => {
-    axios.post('/api/ItemTimingUpdateQuantity/restartTask', {
+    request.post('/api/item-timing-update-quantity/restart-task', {
         id
     }).then(response => {
         if (response.data.status == 1) {
@@ -177,7 +177,7 @@ const removeTask = (id) => {
 }
 
 const doRemoveTask = (id) => {
-    axios.post('/api/ItemTimingUpdateQuantity/removeTask', {
+    request.post('/api/item-timing-update-quantity/remove-task', {
         id
     }).then(response => {
         if (response.data.status == 1) {

@@ -6,7 +6,8 @@
     </el-breadcrumb>
     <div style="margin:20px 0">
         <el-alert title="可定时对商品或sku修改库存，有sku的商品只能修改sku的库存不能直接修改商品库存，无sku的商品则直接修改商品库存" type="info" show-icon />
-        <el-alert title="商品总库存改为0后，自动下架到仓库中；仓库中的商品修改后库存大于0的话，不自动上架，如需定时上下架整个商品请用“定时上下架”功能" type="info" show-icon style="margin-top:5px;" />
+        <el-alert title="商品总库存改为0后，自动下架到仓库中；仓库中的商品修改后库存大于0的话，不自动上架，如需定时上下架整个商品请用“定时上下架”功能" type="info" show-icon
+            style="margin-top:5px;" />
     </div>
     <el-form :model="form" label-width="auto" style="max-width:1050px">
         <el-form-item label="任务名称">
@@ -74,10 +75,10 @@
     <ItemsSelect ref="itemSelectRef" @get-selection-items="getSelectionItems" withSku />
 </template>
 <script setup>
-import { reactive, ref, useTemplateRef, markRaw } from 'vue'
+import { reactive, ref, useTemplateRef, markRaw, toRaw } from 'vue'
 import ItemsSelect from '@/components/ItemsSelect.vue'
-import axios from 'axios'
-import qs from 'qs'
+import request from '@/utils/request'
+// import qs from 'qs'
 import { CircleCheck } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router'
 
@@ -97,12 +98,34 @@ const submitBtnDisabled = ref(false)
 
 const router = useRouter()
 
+
+
+
+function deepConvertProxyToNormal(obj) {
+    if (obj === null || typeof obj !== 'object') {
+        return obj;
+    }
+
+    // 如果是数组
+    if (Array.isArray(obj)) {
+        return obj.map(item => deepConvertProxyToNormal(item));
+    }
+
+    // 如果是对象（包括Proxy）
+    const result = {};
+    for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            result[key] = deepConvertProxyToNormal(obj[key]);
+        }
+    }
+    return result;
+}
 const onSubmit = () => {
     submitBtnDisabled.value = true
-    const form1 = Object.assign({}, form)
-    form1.items = tableData.value
+    const formData = Object.assign({}, form)
+    formData.items = tableData.value
     //表单+表格数据一起传送必须用qs.stringify方法，尝试了一个下午！！！！！
-    axios.post('/api/ItemTimingUpdateQuantity/addTask', qs.stringify(form1)).then(response => {
+    request.post('/api/item-timing-update-quantity/add-task', formData).then(response => {
         submitBtnDisabled.value = false
         if (response.data.status) {
             ElMessageBox.alert(
@@ -111,13 +134,9 @@ const onSubmit = () => {
                 {
                     type: 'success',
                     icon: markRaw(CircleCheck),
-                    callback: (action) => {
-                        ElMessage({
-                            type: 'info',
-                            message: `action: ${action}`,
-                        })
-                        router.push('/list')
-                    },
+                    callback: () => {
+                        router.push('/item-timing-update-quantity/list')
+                    }
                 }
             )
         } else {
@@ -130,10 +149,9 @@ const onSubmit = () => {
         }
     }).catch((error) => {
         submitBtnDisabled.value = false
-         ElMessage.error(error)
+        ElMessage.error(error)
     })
 }
-
 
 const getSelectionItems = (items) => {
     tableData.value = items
