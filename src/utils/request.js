@@ -43,9 +43,10 @@ request.interceptors.response.use(
         if (error.response) {
             // 服务器返回了错误状态码
             const { status, data } = error.response
+            // console.log('data:', data)
             switch (status) {
                 case 401:
-                    ElMessage.error('登录已过期，请重新登录，1s后将自动跳转到登录页面')
+                    ElMessage.error(data.msg ? data.msg : '登录已过期，请重新登录，1s后将自动跳转到登录页面')
                     //   store.dispatch('user/logout')
                     localStorage.removeItem('token')
                     sessionStorage.setItem('redirectPath', router.currentRoute.value.path)

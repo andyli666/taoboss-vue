@@ -9,7 +9,7 @@
     <el-col :span="10">
       <el-form ref="formRef" :model="form" label-width="auto" style="margin:40px 0 0 0;max-width: 500px">
         <el-form-item label="品名" prop="name">
-          <el-input v-model="form.name" placeholder="可不填" />
+          <el-input v-model="form.name" placeholder="保存计算记录时有用" />
         </el-form-item>
         <el-form-item label="拿货价" prop="costPrice">
           <el-input-number v-model="form.costPrice" :precision="2" :step="1" />
@@ -205,6 +205,8 @@ const handleDelete = (index, row) => {
     if (response.data.status) {
       ElMessage.success('删除成功')
       getDetails()
+    } else {
+      ElMessage.error(response.data.msg)
     }
   }).catch((error) => {
     ElMessage.error(error)

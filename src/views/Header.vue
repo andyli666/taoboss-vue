@@ -32,15 +32,18 @@
             <el-menu-item index="/widget/blacklist">黑名单设置</el-menu-item>
             <el-menu-item index="/widget/rate-auto-reply">评价自动回复</el-menu-item>
             <el-menu-item index="/widget/profit-calc">利润计算器</el-menu-item>
-            <el-menu-item index="/widget/advice">意见反馈</el-menu-item>
         </el-sub-menu>
+        <el-menu-item index="#" @click="feedbackRef.visible = true">意见反馈</el-menu-item>
     </el-menu>
-</template>
 
+    <Feedback ref="feedbackRef" />
+</template>
 <script setup>
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, useTemplateRef } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useSellerStore } from '@/stores/seller'
+import Feedback from '@/components/Feedback.vue'
+const feedbackRef = useTemplateRef('feedbackRef')
 
 const route = useRoute()
 const activeIndex = computed(() => {
@@ -48,7 +51,7 @@ const activeIndex = computed(() => {
 })
 
 const handleSelect = (key, keyPath) => {
-    console.log(key, keyPath)
+    // console.log(key, keyPath)
 }
 
 const store = useSellerStore()
