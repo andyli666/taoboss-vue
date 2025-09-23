@@ -69,7 +69,7 @@ const login = () => {
             sessionStorage.setItem('isLoggedIn', 1)
             ElMessage.success('登录成功')
             const redirectPath = sessionStorage.getItem('redirectPath')
-            console.log('loginredirectPath',redirectPath)
+            console.log('loginredirectPath',redirectPath,!redirectPath)
             if (redirectPath) {
                 sessionStorage.removeItem('redirectPath');
                 router.push(redirectPath);

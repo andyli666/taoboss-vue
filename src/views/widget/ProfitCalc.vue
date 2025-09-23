@@ -5,11 +5,11 @@
     <el-breadcrumb-item>利润计算器</el-breadcrumb-item>
   </el-breadcrumb>
   <el-row>
-    <el-col :span="6"></el-col>
-    <el-col :span="10">
-      <el-form ref="formRef" :model="form" label-width="auto" style="margin:40px 0 0 0;max-width: 500px">
+    <el-col :span="5"></el-col>
+    <el-col :span="19">
+      <el-form ref="formRef" :model="form" label-width="auto" style="margin:40px 0 0 0;max-width: 650px">
         <el-form-item label="品名" prop="name">
-          <el-input v-model="form.name" placeholder="保存计算记录时有用" />
+          <el-input v-model="form.name" placeholder="保存计算记录时有用" style="width: 230px" />
         </el-form-item>
         <el-form-item label="拿货价" prop="costPrice">
           <el-input-number v-model="form.costPrice" :precision="2" :step="1" />
@@ -33,7 +33,14 @@
           <el-input-number v-model="form.taojinCoinSoftwareServiceFeeRatio" :precision="2" :step="1" />
         </el-form-item> -->
         <el-form-item label="基础软件服务费率(%)" prop="basicSoftwareServiceFeeRatio">
-          <el-input-number v-model="form.basicSoftwareServiceFeeRatio" :precision="2" :step="1" />
+          <el-row :gutter="10">
+            <el-col :span="8">
+              <el-input-number v-model="form.basicSoftwareServiceFeeRatio" :precision="2" :step="1" />
+            </el-col>
+            <el-col :span="16">
+              <span style="color: #909399; font-size: 12px;">淘宝为0.6%，天猫为具体类目软件服务费，不同类目不同</span>
+            </el-col>
+          </el-row>
         </el-form-item>
         <el-form-item label="先用后付技术服务费率(%)" prop="payAfterUseTechnicalServiceFeeRatio">
           <el-input-number v-model="form.payAfterUseTechnicalServiceFeeRatio" :precision="2" :step="1" />
@@ -68,7 +75,6 @@
         </el-form-item>
       </el-form>
     </el-col>
-    <el-col :span="8"></el-col>
   </el-row>
 
   <el-form :inline="true" :model="formSearch" @submit.prevent style="margin:40px 0 0 0;max-width:1050px">
@@ -112,8 +118,9 @@
   </el-pagination>
 </template>
 <script setup>
-import { reactive, ref, onMounted, useTemplateRef, computed } from 'vue'
+import { reactive, ref, onMounted, useTemplateRef } from 'vue'
 import request from '@/utils/request'
+import { Warning } from '@element-plus/icons-vue'
 
 const form = reactive({
   name: '',
