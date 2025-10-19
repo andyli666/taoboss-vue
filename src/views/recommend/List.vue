@@ -4,21 +4,24 @@
     <el-breadcrumb-item>关联推荐 </el-breadcrumb-item>
     <el-breadcrumb-item>活动列表</el-breadcrumb-item>
   </el-breadcrumb>
-  <el-form :inline="true" :model="form" @submit.prevent style="margin:40px 0 0 0;max-width:1050px">
-    <el-form-item label="活动名称">
-      <el-input v-model="form.activity_name" clearable @keyup.enter="getActivities" />
-    </el-form-item>
-    <el-form-item>
-      <el-button type="primary" @click="getActivities">查询</el-button>
-    </el-form-item>
-  </el-form>
+  <div style="padding:40px 0 0 0;">
+    <el-form :inline="true" :model="form" @submit.prevent style="width:800px">
+      <el-form-item label="活动名称">
+        <el-input v-model="form.activity_name" clearable @keyup.enter="getActivities" />
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="getActivities">查询</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
   <el-table :data="tableData" row-key="id" highlight-current-row>
     <el-table-column type="index" width="55" label="序号" :index="indexMethod" />
     <el-table-column property="activity_name" label="活动名称" width="300" />
     <el-table-column property="content_type" label="内容类型" width="100">
       <template #default="scope">
         <div v-if="scope.row.content_type == 'system'">系统模板</div>
-        <div v-else-if="scope.row.content_type == 'custom'">自定义内容</div>
+        <div v-else-if="scope.row.content_type == 'custom'">自定义图片</div>
+        <div v-else-if="scope.row.content_type == 'map'">自定义热区</div>
       </template>
     </el-table-column>
     <el-table-column property="position" label="发布位置" width="100">

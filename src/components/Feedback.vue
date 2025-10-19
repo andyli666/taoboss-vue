@@ -1,5 +1,5 @@
 <template>
-    <el-drawer v-model="visible" title="意见反馈" direction="rtl">
+    <el-drawer v-model="visible" title="意见反馈" direction="rtl" @opened="handleOpened">
         <el-tabs v-model="activeName">
             <el-tab-pane label="我要反馈" name="new">
                 <div>
@@ -18,11 +18,6 @@
                 </div>
             </el-tab-pane>
             <el-tab-pane label="反馈记录" name="detail">
-                <!-- <el-descriptions title="" :column="1" direction="vertical" border>
-                    <el-descriptions-item
-                        label="">kooriookamikooriookamikooriookamikooriookamikooriookamikooriookami</el-descriptions-item>
-                    <el-descriptions-item label="">18100000000</el-descriptions-item>
-                </el-descriptions> -->
                 <div v-for="detail in details">
                     <div>{{ detail.desc }}</div>
                     <el-divider content-position="left">{{ detail.datetime }}</el-divider>
@@ -91,7 +86,8 @@ const handleCancel = () => {
     visible.value = false
 }
 
-onMounted(() => {
+// Drawer 打开动画结束时的回调
+const handleOpened = () => {
     getDetails()
-})
+}
 </script>

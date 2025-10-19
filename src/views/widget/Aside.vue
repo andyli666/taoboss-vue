@@ -3,9 +3,10 @@
     <el-sub-menu index="1">
       <template #title>小工具</template>
       <el-menu-item index="/widget/blacklist">黑名单设置</el-menu-item>
-      <el-menu-item index="/widget/rate-auto-reply">评价自动回复</el-menu-item>
       <el-menu-item index="/widget/profit-calc">利润计算器</el-menu-item>
-      <el-menu-item index="/widget/advice">意见反馈</el-menu-item>
+      <el-menu-item index="/widget/auto-rate">自动评价</el-menu-item>
+      <el-menu-item index="/widget/rate-alarm">中差评提醒</el-menu-item>
+      <el-menu-item index="/widget/rate-auto-reply">评价自动回复</el-menu-item>
     </el-sub-menu>
   </el-menu>
 </template>

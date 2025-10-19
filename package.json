@@ -22,6 +22,9 @@
     "qs": "^6.14.0",
     "sortablejs": "^1.15.6",
     "vue": "^3.5.13",
+    "vue-hot-image": "^1.0.8",
+    "vue-hot-img": "^0.3.1",
+    "vue-hotzone": "^1.1.0",
     "vue-router": "^4.5.1",
     "vuedraggable": "^4.1.0"
   },

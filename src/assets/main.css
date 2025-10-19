@@ -10,12 +10,19 @@
 .ml-1 {
   margin-left: .75rem;
 }
+
 .mt-40 {
-    margin-top: 40px;
+  margin-top: 40px;
 }
-.ml-10{
+
+.ml-10 {
   margin-left: 10px;
 }
-.mt-5{
+
+.mt-5 {
   margin-top: 5px;
+}
+
+.mb-5 {
+  margin-bottom: 5px;
 }

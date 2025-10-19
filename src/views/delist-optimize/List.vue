@@ -14,8 +14,8 @@
     </el-form>
     <el-table :data="tableData" row-key="id">
         <!-- <el-table-column type="index" width="55" label="序号" :index="indexMethod" /> -->
-        <el-table-column property="task_name" label="名称" width="300" />
-        <el-table-column property="delist_time" label="计划下架时间" width="170" />
+        <el-table-column property="task_name" label="任务名称" width="300" />
+        <el-table-column property="delist_time" label="计划上下架时间" width="170" />
         <el-table-column label="状态" width="100">
             <template #default="scope">
                 <div v-if="scope.row.status == 0">待执行</div>

@@ -4,6 +4,7 @@
       <template #title>上下架时间优化</template>
       <el-menu-item index="/delist-optimize/new">新建优化任务</el-menu-item>
       <el-menu-item index="/delist-optimize/list">优化任务列表</el-menu-item>
+      <el-menu-item index="/delist-optimize/distribution">上下架时间分布</el-menu-item>
     </el-sub-menu>
   </el-menu>
 </template>

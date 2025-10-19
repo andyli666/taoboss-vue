@@ -5,7 +5,7 @@
             <el-input v-model="form.title" clearable @keyup.enter="getItems" />
         </el-form-item>
         <el-form-item>
-            <el-button @click="getItems">查询</el-button>
+            <el-button @click="getItems" :loading="loading">{{ loading ? '查询中...' : '查询' }}</el-button>
         </el-form-item>
     </el-form>
     <el-radio-group v-model="radio">
@@ -56,7 +56,9 @@ const form = reactive({
 })
 const radio = ref()
 
+const loading = ref(false)
 const getItems = () => {
+    loading.value = true
     request.post('/api/item/get-items', {
         title_contains: form.title,
         approve_status: form.approveStatus,
@@ -64,9 +66,11 @@ const getItems = () => {
         rows: pageSize.value,
         pagination: 1//远程分页
     }).then(response => {
+        loading.value = false
         tableData.value = response.data.rows
         total.value = response.data.total
     }).catch((error) => {
+        loading.value = false
         ElMessage.error(error)
     })
 }

@@ -92,6 +92,32 @@ export const router = createRouter({
                         default: () => import('./views/delist-optimize/List.vue'),
                         aside: () => import('./views/delist-optimize/Aside.vue')
                     }
+                },
+                {
+                    path: 'distribution',
+                    components: {
+                        default: () => import('./views/delist-optimize/Distribution.vue'),
+                        aside: () => import('./views/delist-optimize/Aside.vue')
+                    }
+                }
+            ]
+        },
+        {
+            path: '/timing-list-delist/',
+            children: [
+                {
+                    path: 'new/:id(\\d+)?',
+                    components: {
+                        default: () => import('./views/timing-list-delist/New.vue'),
+                        aside: () => import('./views/timing-list-delist/Aside.vue')
+                    }
+                },
+                {
+                    path: 'list',
+                    components: {
+                        default: () => import('./views/timing-list-delist/List.vue'),
+                        aside: () => import('./views/timing-list-delist/Aside.vue')
+                    }
                 }
             ]
         },
@@ -119,6 +145,20 @@ export const router = createRouter({
                         aside: () => import('./views/widget/Aside.vue')
                     }
                 },
+                {
+                    path: 'auto-rate',
+                    components: {
+                        default: () => import('./views/widget/AutoRate.vue'),
+                        aside: () => import('./views/widget/Aside.vue')
+                    }
+                },
+                {
+                    path: 'rate-alarm',
+                    components: {
+                        default: () => import('./views/widget/RateAlarm.vue'),
+                        aside: () => import('./views/widget/Aside.vue')
+                    }
+                },
             ]
         },
         {
@@ -132,18 +172,14 @@ export const router = createRouter({
             }
         },
         { path: '/', redirect: '/index' },
-        // { path: '/', redirect: '/recommend/list' },
-        // {
-        //     path: '/index', name: 'index', component: () => import('./views/Index.vue')
-        // },
         {
             path: '/index', name: 'index', component: () => import('./views/Index.vue'), meta: {
                 hideAside: true
             }
         },
         {
-            path: '/callback', name: 'callback', component: () => import('./views/Callback.vue'), meta: {
-                hideLayout: true
+            path: '/test', name: 'test', component: () => import('./views/Test.vue'), meta: {
+                hideAside: true
             }
         }
     ],

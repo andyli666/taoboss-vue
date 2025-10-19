@@ -18,6 +18,7 @@ const saveToken = (response) => {
     localStorage.setItem('token', authToken);
     localStorage.setItem('user', JSON.stringify(user))
     sessionStorage.setItem('isLoggedIn', true)
+    sessionStorage.setItem('sellerType', user.seller_type)
     // ElMessage.success('登录成功')
     const redirectPath = sessionStorage.getItem('redirectPath')
     // console.log('loginredirectPath',redirectPath)
@@ -43,6 +44,8 @@ const auth = () => {
     } else if (route.query.error_description) {
         document.body.innerHTML = route.query.error_description
         return
+    } else {
+        reAuth()
     }
     if (!url) {
         if (!sessionStorage.getItem('isLoggedIn')) {
@@ -59,7 +62,7 @@ const auth = () => {
             saveToken(response)
         } else {
             if (response.data.code == 401) {
-                location.href = response.data.data.url
+                window.location.href = response.data.data.url
             }
             ElMessage.error(response.data.msg)
         }

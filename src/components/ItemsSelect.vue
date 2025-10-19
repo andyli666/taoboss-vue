@@ -13,7 +13,8 @@
                 </el-select>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="getItems">查询</el-button>
+                <el-button type="primary" @click="getItems" :loading="loading">{{ loading ? '查询中...' :
+                    '查询'}}</el-button>
             </el-form-item>
         </el-form>
         <el-table :data="tableData" :tree-props="treeProps" row-key="id" ref="multipleTableRef"
@@ -28,7 +29,7 @@
                     </a>
                 </template>
             </el-table-column>
-            <el-table-column property="num_iid" label="ID" width="150" />
+            <el-table-column property="num_iid" label="ID" width="135" />
             <el-table-column property="title" label="标题" />
             <el-table-column v-if="props.showDelistTime" property="delist_time" label="自动上下架时间" width="210"
                 sortable="custom">
@@ -88,7 +89,9 @@ const props = defineProps({
     showDelistTime: Boolean
 })
 
+const loading = ref(false)
 const getItems = () => {
+    loading.value = true
     request.post('/api/item/get-items', {
         title_contains: form.title,
         approve_status: form.approveStatus,
@@ -99,9 +102,11 @@ const getItems = () => {
         order: order.value,
         pagination: 1//远程分页
     }).then(response => {
+        loading.value = false
         tableData.value = formatItems(response.data.rows)
         total.value = response.data.total
     }).catch((error) => {
+        loading.value = false
         ElMessage.error(error)
     })
 }

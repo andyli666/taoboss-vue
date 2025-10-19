@@ -10,28 +10,36 @@
             <template #title>关联推荐</template>
             <el-menu-item index="/recommend/new">新建活动</el-menu-item>
             <el-menu-item index="/recommend/list">活动列表</el-menu-item>
-            <el-menu-item index="/recommend/banner">免费海报下载</el-menu-item>
+            <el-menu-item index="/recommend/banner">海报下载</el-menu-item>
         </el-sub-menu>
         <el-sub-menu index="delist-optimize">
             <template #title>上下架时间优化</template>
             <el-menu-item index="/delist-optimize/new">新建优化任务</el-menu-item>
             <el-menu-item index="/delist-optimize/list">优化任务列表</el-menu-item>
+            <el-menu-item index="/delist-optimize/distribution">上下架时间分布</el-menu-item>
         </el-sub-menu>
         <el-sub-menu index="item-timing-update-quantity">
             <template #title>定时修改库存</template>
             <el-menu-item index="/item-timing-update-quantity/new">新建任务</el-menu-item>
             <el-menu-item index="/item-timing-update-quantity/list">任务列表</el-menu-item>
         </el-sub-menu>
-        <el-sub-menu index="finance">
+        <el-sub-menu index="timing-list-delist">
+            <template #title>定时上/下架</template>
+            <el-menu-item index="/timing-list-delist/new">新建任务</el-menu-item>
+            <el-menu-item index="/timing-list-delist/list">任务列表</el-menu-item>
+        </el-sub-menu>
+        <!-- <el-sub-menu index="finance">
             <template #title>财务</template>
             <el-menu-item index="/finance/profit">利润分析</el-menu-item>
             <el-menu-item index="/finance/costprice">成本价设置</el-menu-item>
-        </el-sub-menu>
+        </el-sub-menu> -->
         <el-sub-menu index="widget">
             <template #title>小工具</template>
             <el-menu-item index="/widget/blacklist">黑名单设置</el-menu-item>
-            <el-menu-item index="/widget/rate-auto-reply">评价自动回复</el-menu-item>
             <el-menu-item index="/widget/profit-calc">利润计算器</el-menu-item>
+            <el-menu-item index="/widget/auto-rate">自动评价</el-menu-item>
+            <el-menu-item index="/widget/rate-alarm">中差评提醒</el-menu-item>
+            <el-menu-item index="/widget/rate-auto-reply">评价自动回复</el-menu-item>
         </el-sub-menu>
         <el-menu-item index="#" @click="feedbackRef.visible = true">意见反馈</el-menu-item>
     </el-menu>
@@ -39,10 +47,15 @@
     <Feedback ref="feedbackRef" />
 </template>
 <script setup>
-import { computed, onMounted, useTemplateRef } from 'vue'
+import { computed, onMounted, useTemplateRef, defineAsyncComponent, hydrateOnVisible } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useSellerStore } from '@/stores/seller'
-import Feedback from '@/components/Feedback.vue'
+
+// import Feedback from '@/components/Feedback.vue'
+const Feedback = defineAsyncComponent({
+    loader: () => import('@/components/Feedback.vue'),
+    hydrate: hydrateOnVisible()
+})
 const feedbackRef = useTemplateRef('feedbackRef')
 
 const route = useRoute()

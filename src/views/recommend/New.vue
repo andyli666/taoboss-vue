@@ -6,7 +6,7 @@
     </el-breadcrumb>
     <el-form :model="form" label-width="auto" style="max-width:1050px">
         <el-form-item label="活动名称">
-            <el-input v-model="form.activity_name" placeholder="方便自己管理和识别不同活动" />
+            <el-input v-model="form.activity_name" placeholder="可不填，不填的话，系统根据当前日期自动生成" />
         </el-form-item>
         <el-form-item label="活动内容">
             <el-tabs v-model="activeTabName" type="border-card" style="width:100%">
@@ -105,7 +105,7 @@
                         </el-splitter-panel>
                     </el-splitter>
                 </el-tab-pane>
-                <el-tab-pane label="自定义内容" name="custom">
+                <el-tab-pane label="自定义图片" name="custom">
                     <el-splitter>
                         <el-splitter-panel>
                             <div style="margin:10px 5px 10px 0">
@@ -152,7 +152,7 @@
                                 <img w-full :src="dialogImageUrl" alt="Preview Image" />
                             </el-dialog>
                         </el-splitter-panel>
-                        <el-splitter-panel :size="230" :resizable="false">
+                        <el-splitter-panel :size="previewWidth" :resizable="false">
                             <div class="preview">
                                 <div class="preview-header">
                                     <span class="label">预览</span>
@@ -168,6 +168,42 @@
                                             <img v-else :src="item.url" width="230" />
                                         </div>
                                         <div class="current-desc" v-show="form.position == 'top'">当前详情描述</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </el-splitter-panel>
+                    </el-splitter>
+                </el-tab-pane>
+                <el-tab-pane label="自定义热区" name="map">
+                    <el-splitter>
+                        <el-splitter-panel>
+                            <div :style="'width:' + mapWidth + 'px'">
+                                <vue-hot-image v-model="mapData" :url="mapUrl" @select="handleMapSelect" :max="15" />
+                            </div>
+                        </el-splitter-panel>
+                        <el-splitter-panel :size="previewWidth" :resizable="false">
+                            <div class="preview">
+                                <el-upload action="/api/upload-image/index" :headers="headers"
+                                    v-model:file-list="fileListMap" :data="{ title_prefix: '自定义热区' }"
+                                    :on-success="handleUploadSuccessMap" :show-file-list="false"
+                                    :before-upload="beforeMapUpload">
+                                    <template #trigger>
+                                        <el-button type="primary">选择图片</el-button>
+                                    </template>
+                                    <template #tip>
+                                        <div class="el-upload__tip">
+                                            限制一个图片，新选择图片将覆盖旧图片；图片尺寸[宽度620~1500px，高度<2000px]；支持jpg /png格式；大小不超过5MB </div>
+                                    </template>
+                                </el-upload>
+                                <div>
+                                    <div v-for="(item, index) in mapData" class="mb-5">
+                                        <el-input v-model="item.link" placeholder="请选择链接">
+                                            <template #prepend>链接{{ index + 1 }}</template>
+                                            <template #append>
+                                                <el-button :icon="Link"
+                                                    @click="wirelessLinkGetMapRef.dialogVisible = true; wirelessLinkGetMapRef.link = item.link == undefined ? '' : item.link; currentMapIndex = index" />
+                                            </template>
+                                        </el-input>
                                     </div>
                                 </div>
                             </div>
@@ -190,7 +226,7 @@
                             @click="itemSelectRef.dialogVisible = true">添加商品</el-button>
                     </el-col>
                     <el-col :span="21">
-                        <el-alert title="可先选择一个测试商品发布，待发布查看没问题后再增加发布到其他商品" type="info" show-icon :closable="false" />
+                        <!-- <el-alert title="可先选择一个测试商品发布，待发布查看没问题后再增加发布到其他商品" type="info" show-icon :closable="false" /> -->
                     </el-col>
                 </el-row>
             </div>
@@ -250,6 +286,7 @@
             </div>
         </template>
     </el-dialog>
+    <WirelessLinkGet ref="wirelessLinkGetMapRef" @get-wireless-link="getWirelessLinkMap" />
 </template>
 <script setup>
 import { reactive, ref, useTemplateRef, watch, onMounted, computed } from 'vue'
@@ -263,12 +300,12 @@ import Sortable from 'sortablejs'
 import TemplateSelect from '@/components/TemplateSelect.vue'
 import { isEmptyObject, getItemWirelessUrl } from '@/utils/index'
 import { EventSourcePolyfill } from 'event-source-polyfill'
+import VueHotImage from 'vue-hot-image'
 
 const itemSelectRef = useTemplateRef('itemSelectRef')
 const wirelessLinkGetRef = useTemplateRef('wirelessLinkGetRef')
 const templateSelectRef = useTemplateRef('templateSelectRef')
 
-// do not use same name with ref
 const form = reactive({
     activity_name: '',
     position: 'top',
@@ -277,7 +314,7 @@ const form = reactive({
 //
 const activeTabName = ref('system')
 
-//图片上传
+// 图片上传
 const uploadRef = useTemplateRef('uploadRef')
 const token = localStorage.getItem('token')
 const headers = computed(() => {
@@ -303,12 +340,12 @@ const handlePictureCardPreview = (uploadFile) => {
     dialogVisible.value = true
 }
 const handlePictureRemove = (uploadFile) => {
-    //本地删除
+    // 本地删除
     fileList.value.splice(fileList.value.findIndex(v => v.uid == uploadFile.uid), 1)
     if (uploadFile.picture_id === undefined) {
         return
     }
-    //远程删除
+    // 远程删除
     request.post('/api/upload-image/remove', { picture_id: uploadFile.picture_id }).then(response => {
         //do nothing
     }).catch((error) => {
@@ -350,7 +387,7 @@ const handleExceed = () => {
     ElMessage.error('最多上传5张图片')
 }
 
-//把获取的无线页面链接设置到fileList对应的file中
+// 把获取的无线页面链接设置到fileList对应的file中
 const currentFileUid = ref()
 const getWirelessLink = (link) => {
     const index = fileList.value.findIndex(file => {
@@ -362,19 +399,19 @@ const getWirelessLink = (link) => {
 }
 
 
-//发布范围
+// 发布范围
 const tableData = ref([])
-//发布范围-添加选择的商品
+// 发布范围-添加选择的商品
 const getSelectionItems = (items) => {
     tableData.value = items
 }
-//发布范围商品分页
+// 发布范围商品分页
 const currentPage = ref(1)
 const pageSize = ref(10)
 const handleCurrentChange = (val) => {
     currentPage.value = val
 }
-//发布范围商品删除
+// 发布范围商品删除
 const handleDelete = (index, row) => {
     const itemIndex = tableData.value.findIndex(currentValue => {
         return currentValue.num_iid == row.num_iid
@@ -382,19 +419,19 @@ const handleDelete = (index, row) => {
     tableData.value.splice(itemIndex, 1)
 }
 
-//提交数据
+// 提交数据
 const submitBtnLoading = ref(false)
 const router = useRouter()
 const onSubmit = () => {
     const formData = Object.assign({}, form)
     formData.contentType = activeTabName.value
-    if (formData.contentType == 'custom') {//自定义内容
+    if (formData.contentType == 'custom') {// 自定义图片
         formData.uploadImages = getImageUrls()
         if (!formData.uploadImages.length) {
-            ElMessage.error('自定义内容不能为空')
+            ElMessage.error('自定义图片不能为空')
             return
         }
-    } else if (formData.contentType == 'system') {//系统模板
+    } else if (formData.contentType == 'system') {// 系统模板
         if (isEmptyObject(template.value)) {
             ElMessage.error('请选择模板')
             return
@@ -405,6 +442,14 @@ const onSubmit = () => {
             return
         }
         formData.recItems = tableDataRec.value
+    } else if (formData.contentType == 'map') {// 热区
+        if (!checkMap()) {
+            return
+        }
+        formData.mapWidth = mapWidth.value
+        formData.mapPicUrl = mapUrl.value
+        formData.mapPicId = mapPicId.value
+        formData.mapData = mapData.value
     } else {
         ElMessage.error('未识别活动内容类型')
         return
@@ -417,7 +462,7 @@ const onSubmit = () => {
     // console.log(formData)
     // return
     submitBtnLoading.value = true
-    //表单+表格数据一起传送必须用qs.stringify方法
+    // 表单+表格数据一起传送必须用qs.stringify方法
     // request.post('/api/recommend/new', qs.stringify(formData)).then(response => {
     request.post('/api/recommend/new', formData).then(response => {
         if (response.data.status) {
@@ -439,7 +484,7 @@ const onSubmit = () => {
         ElMessage.error(error)
     })
 }
-//获取上传图片urls
+// 获取上传图片urls
 const getImageUrls = () => {
     return fileList.value.map((item) => {
         return {
@@ -460,7 +505,7 @@ const publishActivity = (activityId) => {
     // 创建EventSource连接
     const eventSource = new EventSourcePolyfill(url, {
         headers: {
-            'Authorization': `Bearer ${token}`,//设置token
+            'Authorization': `Bearer ${token}`,// 设置token
         },
         withCredentials: true  // 携带跨域凭据
     })
@@ -490,13 +535,13 @@ const handleDialogProgressClose = () => {
     router.push({ name: 'recommend-list' })
 }
 
-//选择的系统模板
+// 选择的系统模板
 const template = ref({})
 const getSelectionTemplate = (val) => {
     if (val) { template.value = val }
 }
 
-//推荐商品
+// 推荐商品
 const handleAddItemBtnClick = () => {
     if (isEmptyObject(template.value)) {
         ElMessage.error('请先选择模板')
@@ -509,7 +554,7 @@ const maxItems = computed(() => {
 })
 const recItemsSelectRef = useTemplateRef('recItemsSelectRef')
 const tableDataRec = ref([])
-//推荐商品-添加选择的商品
+// 推荐商品-添加选择的商品
 const getRecSelectionItems = (items) => {
     if (items.length > maxItems.value) {
         ElMessage.error(`最多选择${maxItems.value}个商品`)
@@ -517,7 +562,7 @@ const getRecSelectionItems = (items) => {
     }
     tableDataRec.value = items
 }
-//发布范围商品删除
+// 发布范围商品删除
 const handleDeleteRec = (index, row) => {
     const itemIndex = tableDataRec.value.findIndex(currentValue => {
         return currentValue.num_iid == row.num_iid
@@ -525,7 +570,7 @@ const handleDeleteRec = (index, row) => {
     tableDataRec.value.splice(itemIndex, 1)
 }
 
-//预览行数
+// 预览行数
 const rows = computed(() => {
     if (isEmptyObject(template.value)) {
         return 0
@@ -543,9 +588,9 @@ const groupedItems = computed(() => {
     }
     return result
 })
-//预览区域的宽度
+// 预览区域的宽度
 const previewWidth = ref(230)
-//主图宽度
+// 主图宽度
 const imageWidth = computed(() => {
     if (isEmptyObject(template.value)) {
         return 0
@@ -559,21 +604,21 @@ const imageWidth = computed(() => {
 //     }
 //    return template.value.btn_image_width *  previewWidth.value / 1000
 // })
-//左边图片宽度
+// 左边图片宽度
 const leftPicWidth = computed(() => {
     if (isEmptyObject(template.value)) {
         return 0
     }
     return template.value.left_pic_width * previewWidth.value / 1000
 })
-//右边图片宽度
+// 右边图片宽度
 const rightPicWidth = computed(() => {
     if (isEmptyObject(template.value)) {
         return 0
     }
     return template.value.right_pic_width * previewWidth.value / 1000
 })
-//图片行宽度（出去左右图片宽度）
+// 图片行宽度（出去左右图片宽度）
 const imageRowWidth = computed(() => {
     if (isEmptyObject(template.value)) {
         return 0
@@ -598,7 +643,7 @@ watch(rows, (newRows) => {
 })
 
 
-//上传图片排序
+// 上传图片排序
 const initSortable = () => {
     const el = uploadRef.value.$el.querySelector('.el-upload-list')
     Sortable.create(el, {
@@ -609,7 +654,7 @@ const initSortable = () => {
         }
     })
 }
-//推荐商品排序
+// 推荐商品排序
 const initSortableRecTable = () => {
     const el = document.querySelector(".elTable .el-table__body-wrapper tbody")
     Sortable.create(el, {
@@ -628,7 +673,64 @@ onMounted(() => {
     initSortableRecTable()
 })
 
-
+// 自定义热区
+const mapWidth = ref(700)
+const mapUrl = ref('')
+const mapPicId = ref('')
+const mapData = ref([])
+const handleMapSelect = (index) => {
+    // console.log(index)
+    // console.log(mapData.value)
+}
+const beforeMapUpload = (rawFile) => {
+    if (rawFile.type !== 'image/jpeg' && rawFile.type !== 'image/png') {
+        ElMessage.error('只支持jpg/png格式')
+        return false
+    } else if (rawFile.size / 1024 / 1024 > 5) {
+        ElMessage.error('图片大小不能超过5MB')
+        return false
+    }
+    return true
+}
+const fileListMap = ref([])
+const handleUploadSuccessMap = (response, uploadFile) => {
+    if (response.status == 0) {// 远程上传错误
+        ElMessage.error(response.info)
+        fileListMap.value.pop()
+    } else {
+        mapUrl.value = uploadFile.response.data.picture_path
+        mapPicId.value = uploadFile.response.data.picture_id
+    }
+}
+const wirelessLinkGetMapRef = useTemplateRef('wirelessLinkGetMapRef')
+const currentMapIndex = ref(0)
+const getWirelessLinkMap = (link) => {
+    mapData.value[currentMapIndex.value].link = link
+}
+const checkMap = () => {
+    if (!mapUrl.value) {
+        ElMessage.error('图片不能为空')
+        return false
+    }
+    if (mapData.value.length == 0) {
+        ElMessage.error('热区不能为空')
+        return false
+    } else {
+        for (let i = 0; i < mapData.value.length; i++) {
+            const msg = '链接' + (i + 1) + '不能为空'
+            if (mapData.value[i].link == undefined) {
+                ElMessage.error(msg)
+                return false
+            }
+            const link = mapData.value[i].link.trim()
+            if (!link) {
+                ElMessage.error(msg)
+                return false
+            }
+        }
+    }
+    return true
+}
 
 </script>
 <style scoped>
@@ -732,5 +834,9 @@ onMounted(() => {
 .btn-wrap {
     display: flex;
     align-items: flex-start;
+}
+
+:deep(.el-input-group__prepend) {
+    padding: 0 5px;
 }
 </style>
