@@ -1,7 +1,8 @@
 @import './base.css';
 
 #app {
-  max-width: 1280px;
+  /* max-width: 1280px; */
+  max-width: 1600px;
   margin: 0 auto;
   /* padding: 2rem; */
   /* font-weight: normal; */
@@ -9,6 +10,10 @@
 
 .ml-1 {
   margin-left: .75rem;
+}
+
+.ml-5 {
+  margin-left: 5px;
 }
 
 .mt-40 {
@@ -23,6 +28,41 @@
   margin-top: 5px;
 }
 
+.mt-15 {
+  margin-top: 15px;
+}
+
 .mb-5 {
   margin-bottom: 5px;
+}
+
+.mb-15 {
+  margin-bottom: 15px;
+}
+
+.mtb-15 {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.h {
+  color: #FF9900;
+}
+
+.h-b {
+  font-weight: bold;
+  color: #FF9900;
+}
+
+.red {
+  color: #FF0000
+}
+
+.text-gray {
+  color: #999999;
+  font-size: small;
+}
+
+.flex {
+  display: flex;
 }

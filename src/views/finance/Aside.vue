@@ -2,6 +2,7 @@
   <el-menu :default-active="activeIndex" class="el-menu-aside" :default-openeds="['1']" router>
     <el-sub-menu index="1">
       <template #title>财务</template>
+      <el-menu-item index="/finance/trade-statistics">订单统计</el-menu-item>
       <el-menu-item index="/finance/profit">利润分析</el-menu-item>
       <el-menu-item index="/finance/costprice">成本价设置</el-menu-item>
     </el-sub-menu>

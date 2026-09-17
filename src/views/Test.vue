@@ -1,29 +1,31 @@
 <template>
-    <div style="display:flex;">
-        <div style="width:800px;">
-            <vue-hot-image v-model="data" :url="url" @select="handleSelect" />
-        </div>
-        <div style="width:100px;">
-            1
-        </div>
-    </div>
-
+    <el-button @click="handleClick">测试</el-button>
 </template>
 <script setup>
-import { ref } from 'vue'
-import VueHotImage from 'vue-hot-image'
+import { onMounted } from 'vue'
+import request from '@/utils/request'
+import { useRouter } from 'vue-router'
 
-const url = ref('https://img2.baidu.com/it/u=1595246485,3592807511&fm=253&app=138&f=JPEG?w=536&h=500')
-const max = ref(15)
-// const data = ref([])
-const data = ref([
-    {
-        x: 100, y: 100, width: 100, height: 100
-    }
-])
+const router = useRouter()
 
-const handleSelect = (index) => {
-    console.log(index)
-    console.log(data.value)
+const handleClick = () => {
+    // request.post('/api/index/test', {
+
+    // }).then(response => {
+    //     console.log(response)
+    // }).catch((error) => {
+    //     ElMessage.error(error)
+    // })
+
+    // 
+    router.push('/batch-update/new')
+
+    // const SYNC_SHOWN_KEY = 'taoboss_sync_shown'
+    // localStorage.setItem(SYNC_SHOWN_KEY, 'false')
+    // ElMessage.success('Success')
 }
+
+onMounted(() => {
+    console.log(localStorage.getItem('user'))
+})
 </script>

@@ -4,7 +4,7 @@
         <el-breadcrumb-item>定时修改库存 </el-breadcrumb-item>
         <el-breadcrumb-item>新建任务</el-breadcrumb-item>
     </el-breadcrumb>
-    <div style="margin:20px 0">
+    <div style="margin:15px 0">
         <el-alert title="可定时对商品或sku修改库存，有sku的商品只能修改sku的库存不能直接修改商品库存，无sku的商品则直接修改商品库存" type="info" show-icon />
         <el-alert title="商品总库存改为0后，自动下架到仓库中；仓库中的商品修改后库存大于0的话，不自动上架，如需定时上下架整个商品请用“定时上下架”功能" type="info" show-icon
             style="margin-top:5px;" />

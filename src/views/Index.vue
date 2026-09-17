@@ -28,11 +28,11 @@
                         <template #header>
                             <div>
                                 <el-avatar :icon="Tickets" />
-                                关联推荐
+                                关联营销
                             </div>
                         </template>
                         <div class="desc">
-                            可发布自定义海报或者系统模板生成的关联推荐到商品详情中
+                            可发布自定义海报或者系统模板生成的关联营销到商品详情中
                         </div>
                     </el-card>
                     <el-card style="width: 300px" shadow="never">
@@ -73,7 +73,7 @@
                     </template>
                     <div class="quick-access">
                         <ul>
-                            <li><el-link href="/recommend/list" type="primary">关联推荐活动列表</el-link></li>
+                            <li><el-link href="/recommend/list" type="primary">关联营销活动列表</el-link></li>
                             <li><el-link href="/delist-optimize/list" type="primary">上下架时间优化任务列表</el-link></li>
                             <li>
                                 <el-link href="/item-timing-update-quantity/list" type="primary">定时修改库存任务列表</el-link>

@@ -1,7 +1,7 @@
 <template>
   <el-breadcrumb>
     <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-    <el-breadcrumb-item>关联推荐 </el-breadcrumb-item>
+    <el-breadcrumb-item>关联营销 </el-breadcrumb-item>
     <el-breadcrumb-item>免费海报下载</el-breadcrumb-item>
   </el-breadcrumb>
   <el-form :model="form" class="form" label-width="auto">

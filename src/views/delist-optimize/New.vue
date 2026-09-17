@@ -4,7 +4,7 @@
         <el-breadcrumb-item>上下架优化 </el-breadcrumb-item>
         <el-breadcrumb-item>新建优化任务</el-breadcrumb-item>
     </el-breadcrumb>
-    <div style="margin:20px 0">
+    <div style="margin:15px 0">
         <el-alert title="" type="info" show-icon>
             <div>可对商品自动上下架时间进行调整；</div>
             <div>淘宝商品7天自动上下架一次，越临近下架时间，排名越靠前，把自动上下架时间调整为流量高峰时段可获取更多流量；</div>

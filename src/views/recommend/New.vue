@@ -1,7 +1,7 @@
 <template>
     <el-breadcrumb>
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item>关联推荐 </el-breadcrumb-item>
+        <el-breadcrumb-item>关联营销 </el-breadcrumb-item>
         <el-breadcrumb-item>新建活动</el-breadcrumb-item>
     </el-breadcrumb>
     <el-form :model="form" label-width="auto" style="max-width:1050px">
@@ -115,7 +115,7 @@
                             </div>
                             <el-upload ref="uploadRef" action="/api/upload-image/index" :headers="headers"
                                 v-model:file-list="fileList" list-type="picture-card" :limit="5"
-                                :on-preview="handlePictureCardPreview" :data="{ title_prefix: '关联推荐' }"
+                                :on-preview="handlePictureCardPreview" :data="{ title_prefix: '关联营销' }"
                                 :on-remove="handlePictureRemove" :before-upload="beforePictureUpload"
                                 :on-error="handleUploadError" :on-success="handleUploadSuccess"
                                 :on-exceed="handleExceed"
@@ -295,7 +295,7 @@ import WirelessLinkGet from '@/components/WirelessLinkGet.vue'
 import request from '@/utils/request'
 // import qs from 'qs'
 import { ZoomIn, Plus, Delete, Link } from '@element-plus/icons-vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import Sortable from 'sortablejs'
 import TemplateSelect from '@/components/TemplateSelect.vue'
 import { isEmptyObject, getItemWirelessUrl } from '@/utils/index'
@@ -311,6 +311,7 @@ const form = reactive({
     position: 'top',
     remark: ''
 })
+const route = useRoute()
 //
 const activeTabName = ref('system')
 
@@ -732,6 +733,16 @@ const checkMap = () => {
     return true
 }
 
+// 监听 URL 中的 tab 参数（页面加载 + 路由变化 都会触发）
+watch(
+    () => route.query.tab,
+    (newTab) => {
+        if (newTab && ['system', 'custom', 'map'].includes(newTab)) {
+            activeTabName.value = newTab
+        }
+    },
+    { immediate: true }
+)
 </script>
 <style scoped>
 .el-form {

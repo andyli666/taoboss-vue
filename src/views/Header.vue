@@ -7,10 +7,14 @@
         </el-menu-item>
         <el-menu-item index="/index">首页</el-menu-item>
         <el-sub-menu index="recommend">
-            <template #title>关联推荐</template>
+            <template #title>关联营销</template>
             <el-menu-item index="/recommend/new">新建活动</el-menu-item>
             <el-menu-item index="/recommend/list">活动列表</el-menu-item>
             <el-menu-item index="/recommend/banner">海报下载</el-menu-item>
+        </el-sub-menu>
+        <el-sub-menu index="batch-update">
+            <template #title>批量修改</template>
+            <el-menu-item index="/batch-update/title">修改标题</el-menu-item>
         </el-sub-menu>
         <el-sub-menu index="delist-optimize">
             <template #title>上下架时间优化</template>
@@ -28,11 +32,21 @@
             <el-menu-item index="/timing-list-delist/new">新建任务</el-menu-item>
             <el-menu-item index="/timing-list-delist/list">任务列表</el-menu-item>
         </el-sub-menu>
-        <!-- <el-sub-menu index="finance">
+        <el-sub-menu index="finance">
             <template #title>财务</template>
+            <el-menu-item index="/finance/trade-statistics">订单统计</el-menu-item>
             <el-menu-item index="/finance/profit">利润分析</el-menu-item>
-            <el-menu-item index="/finance/costprice">成本价设置</el-menu-item>
-        </el-sub-menu> -->
+            <el-menu-item index="/cost/item-cost-manage">商品成本配置</el-menu-item>
+            <el-menu-item index="/cost/freight-cost-config">运费成本配置</el-menu-item>
+            <el-menu-item index="/cost/expense">支出明细</el-menu-item>
+            <el-menu-item index="/statistics/order-profit">订单及利润统计</el-menu-item>
+            <el-menu-item index="/statistics/item-sales-analysis">商品销售分析</el-menu-item>
+            <el-menu-item index="/statistics/express-shipment-stat">快递发货量统计</el-menu-item>
+            <el-menu-item index="/statistics/item-refund-analysis">商品退款分析</el-menu-item>
+            <el-menu-item index="/statistics/order-sales-trend-analysis">订单销售趋势分析</el-menu-item>
+            <el-menu-item index="/statistics/item-sales-trend-analysis">商品销售趋势分析</el-menu-item>
+            <el-menu-item index="/statistics/region-sales-analysis">买家地区分析</el-menu-item>
+        </el-sub-menu>
         <el-sub-menu index="widget">
             <template #title>小工具</template>
             <el-menu-item index="/widget/blacklist">黑名单设置</el-menu-item>

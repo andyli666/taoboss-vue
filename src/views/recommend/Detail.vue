@@ -38,7 +38,7 @@
                     <div v-else-if="scope.row.status == 0">未发布</div>
                 </template>
             </el-table-column>
-            <el-table-column property="modified" label="修改时间" width="150" />
+            <el-table-column property="modified" label="发布时间" width="150" />
             <el-table-column property="msg" label="出错信息" show-overflow-tooltip />
             <el-table-column label="操作" width="150">
                 <template #default="scope">

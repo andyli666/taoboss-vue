@@ -1,7 +1,7 @@
 <template>
     <el-breadcrumb>
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item>关联推荐 </el-breadcrumb-item>
+        <el-breadcrumb-item>关联营销 </el-breadcrumb-item>
         <el-breadcrumb-item>编辑活动</el-breadcrumb-item>
     </el-breadcrumb>
     <el-form :model="form" label-width="auto" style="max-width:1050px">
@@ -116,7 +116,7 @@
                             </div>
                             <el-upload ref="uploadRef" action="/api/upload-image/index" :headers="headers"
                                 v-model:file-list="fileList" list-type="picture-card" :limit="5"
-                                :on-preview="handlePictureCardPreview" :data="{ title_prefix: '关联推荐' }"
+                                :on-preview="handlePictureCardPreview" :data="{ title_prefix: '关联营销' }"
                                 :before-upload="beforePictureUpload" :on-error="handleUploadError"
                                 :on-success="handleUploadSuccess" :on-exceed="handleExceed"
                                 :on-remove="handlePictureRemove"

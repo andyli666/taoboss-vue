@@ -1,20 +1,38 @@
 <template>
     <!-- <el-config-provider size="small"> -->
-    <el-dialog v-model="dialogVisible" title="商品选择" width="1000" :close-on-click-modal="false" align-center draggable>
+    <el-dialog v-model="dialogVisible" title="商品选择" width="1050" :close-on-click-modal="false" align-center draggable>
         <el-form :inline="true" :model="form" class="item-search-form" @submit.prevent style="width:100%">
-            <el-form-item label="关键词或id">
-                <el-input v-model="form.title" clearable @keyup.enter="getItems" />
-            </el-form-item>
             <el-form-item label="上架状态">
-                <el-select v-model="form.approveStatus">
+                <el-select v-model="form.approveStatus" style="width:180px" @change="getItems">
                     <el-option label="全部" value="0" />
-                    <el-option label="出售中" value="onsale" />
-                    <el-option label="仓库中" value="instock" />
+                    <el-option label="出售中的商品" value="onsale" />
+                    <el-option label="仓库中的商品" value="instock" />
                 </el-select>
             </el-form-item>
+            <el-form-item label="店铺分类">
+                <el-tree-select v-model="form.shopCategory" :data="data" multiple :render-after-expand="false"
+                    show-checkbox style="width:180px" default-expand-all collapse-tags />
+            </el-form-item>
+            <el-form-item label="价格区间">
+                <el-input-number v-model="form.priceStart" :min="0.01" :precision="2" controls-position="right"
+                    style="width:100px" />
+                &nbsp;到&nbsp;
+                <el-input-number v-model="form.priceEnd" :min="0.01" :precision="2" controls-position="right"
+                    style="width:100px" />
+            </el-form-item>
+            <el-form-item label="商品标题">
+                <el-input v-model="form.title" placeholder="输入关键字" clearable style="width:180px" />
+            </el-form-item>
+            <el-form-item label="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;商品ID">
+                <el-input-tag v-model="form.numIid" collapse-tags collapse-tags-tooltip placeholder="回车键分隔，最多100个"
+                    clearable @change="handleInputTagChangeNumIid" @add-tag="handleAddTagNumIid" style="width:180px" />
+            </el-form-item>
+            <el-form-item label="商家编码">
+                <el-input-tag v-model="form.outerId" collapse-tags collapse-tags-tooltip placeholder="回车键分隔，最多50个"
+                    clearable @change="handleInputTagChangeOuterId" style="width:180px" />
+            </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="getItems" :loading="loading">{{ loading ? '查询中...' :
-                    '查询'}}</el-button>
+                <el-button type="primary" @click="getItems" :loading="loading">查询</el-button>
             </el-form-item>
         </el-form>
         <el-table :data="tableData" :tree-props="treeProps" row-key="id" ref="multipleTableRef"
@@ -81,6 +99,11 @@ const formLabelWidth = '100px'
 const form = reactive({
     title: '',
     approveStatus: '0',
+    shopCategory: null,
+    numIid: [],
+    outerId: [],
+    priceStart: null,
+    priceEnd: null,
 })
 
 const props = defineProps({
@@ -95,6 +118,11 @@ const getItems = () => {
     request.post('/api/item/get-items', {
         title_contains: form.title,
         approve_status: form.approveStatus,
+        shopCategory: form.shopCategory,
+        numIid: form.numIid,
+        outerId: form.outerId,
+        priceStart: form.priceStart,
+        priceEnd: form.priceEnd,
         page: currentPage.value,
         rows: pageSize.value,
         with_sku: props.withSku ? 1 : 0,
@@ -253,7 +281,21 @@ const handleSortChange = (column) => {
 //
 onMounted(() => {
     getItems()
+    getSellerCats()
 })
+const data = ref([])
+// 获取店铺分类
+const getSellerCats = () => {
+    request.post('/api/item/sellercats-list-get', { with_root: 1, v: 1 }).then(response => {
+        if (response.data.msg !== undefined) {
+            ElMessage.error(`获取店铺分类出错：${response.data.msg}`)
+        } else {
+            data.value = response.data
+        }
+    }).catch((error) => {
+        ElMessage.error(error)
+    })
+}
 </script>
 <style scoped>
 .item-search-form .el-select {

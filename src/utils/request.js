@@ -46,7 +46,7 @@ request.interceptors.response.use(
             // console.log('data:', data)
             switch (status) {
                 case 401:
-                    ElMessage.error(data.msg ? data.msg : '登录已过期，请重新登录，1s后将自动跳转到登录页面')
+                    ElMessage.error(data.msg ? data.msg : '登录已过期，请重新登录')
                     //   store.dispatch('user/logout')
                     localStorage.removeItem('token')
                     sessionStorage.setItem('redirectPath', router.currentRoute.value.path)
@@ -58,7 +58,8 @@ request.interceptors.response.use(
                         } else {
                             reAuth()
                         }
-                    }, 1000)
+                    }, 0) // 这个地方不能用1s，不然会发起多次请求，提示多次，需在第一个请求返回401时立即跳转到登录页面
+                    // }, 1000)
                     break
                 case 403:
                     ElMessage.error('没有权限访问')
