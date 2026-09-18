@@ -80,9 +80,7 @@ const login = () => {
         } else {
             ElMessage.error(response.data.msg)
         }
-    }).catch((error) => {
-        ElMessage.error(error)
-    })
+    }).catch(() => {})
 }
 
 const resetForm = (formEl) => {
