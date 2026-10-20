@@ -3,12 +3,9 @@
         <el-tabs type="border-card" v-model="activeName" @tab-change="handleTabChange">
             <el-tab-pane label="成功" name="success">
                 <div class="mt-5 flex">
-                    <div>
-                        <el-form :inline="true" :model="form" label-width="auto" style="max-width:180px" size="small">
-                            <el-form-item label="排除之前恢复成功的">
-                                <el-switch v-model="form.exceptRecovered" />
-                            </el-form-item>
-                        </el-form>
+                    <div class="flex recover-switch">
+                        <span class="switch-label">排除之前恢复成功的</span>
+                        <el-switch v-model="form.exceptRecovered" size="small" />
                     </div>
                     <div>
                         <el-button type="success" size="small" @click="recoverSelected">恢复选中</el-button>
@@ -21,8 +18,8 @@
                         <template #default="scope">
                             <div class="flex-center">
                                 <div>
-                                    <a :href="getItemWirelessUrl(scope.row.num_iid)" target="_blank">
-                                        <el-image :src="scope.row.pic_url + '_60x60.jpg'" style="width:60px">
+                                    <a :href="getItemWirelessUrl(scope.row.numIid)" target="_blank">
+                                        <el-image :src="scope.row.picUrl + '_60x60.jpg'" style="width:60px">
                                             <template #error>&nbsp;</template>
                                         </el-image>
                                     </a>
@@ -30,36 +27,27 @@
                                 <div class="ml-5">
                                     <el-row>{{ scope.row.title }}</el-row>
                                     <el-row>
-                                        <span>ID:{{ scope.row.num_iid }}</span>
-                                        <span v-if="scope.row.recover_num > 0" class="ml-5 h">已恢复{{ scope.row.recover_num }}次</span>
+                                        <span>ID:{{ scope.row.numIid }}</span>
+                                        <span v-if="scope.row.recoverNum > 0" class="ml-5 h">已恢复{{ scope.row.recoverNum }}次</span>
                                     </el-row>
                                 </div>
                             </div>
                         </template>
                     </el-table-column>
+                    <el-table-column property="skuName" label="SKU名称" min-width="150">
+                        <template #default="scope">
+                            <div>{{ scope.row.skuName || '-' }}</div>
+                            <div v-if="scope.row.skuId" class="sku-sub">skuId:{{ scope.row.skuId }}</div>
+                        </template>
+                    </el-table-column>
                     <el-table-column property="original_price" label="原价格" width="150">
                         <template #default="scope">
-                            <div v-if="scope.row.sku_id">
-                                SKU价格: ¥{{ scope.row.original_price }}
-                            </div>
-                            <div v-else>
-                                一口价: ¥{{ scope.row.original_price }}
-                            </div>
+                            ¥{{ scope.row.originalPrice }}
                         </template>
                     </el-table-column>
                     <el-table-column property="new_price" label="修改后价格" width="150">
                         <template #default="scope">
-                            <div v-if="scope.row.sku_id">
-                                SKU价格: ¥{{ scope.row.new_price }}
-                            </div>
-                            <div v-else>
-                                一口价: ¥{{ scope.row.new_price }}
-                            </div>
-                        </template>
-                    </el-table-column>
-                    <el-table-column property="sku_name" label="SKU名称" min-width="150">
-                        <template #default="scope">
-                            {{ scope.row.sku_name || '-' }}
+                            ¥{{ scope.row.newPrice }}
                         </template>
                     </el-table-column>
                 </el-table>
@@ -79,40 +67,36 @@
                         <template #default="scope">
                             <div class="flex-center">
                                 <div>
-                                    <a :href="getItemWirelessUrl(scope.row.num_iid)" target="_blank">
-                                        <el-image :src="scope.row.pic_url + '_60x60.jpg'" style="width:60px">
+                                    <a :href="getItemWirelessUrl(scope.row.numIid)" target="_blank">
+                                        <el-image :src="scope.row.picUrl + '_60x60.jpg'" style="width:60px">
                                             <template #error>&nbsp;</template>
                                         </el-image>
                                     </a>
                                 </div>
                                 <div class="ml-5">
                                     <el-row>{{ scope.row.title }}</el-row>
-                                    <el-row>ID:{{ scope.row.num_iid }}</el-row>
+                                    <el-row>ID:{{ scope.row.numIid }}</el-row>
                                 </div>
                             </div>
                         </template>
                     </el-table-column>
+                    <el-table-column property="skuName" label="SKU名称" min-width="150">
+                        <template #default="scope">
+                            <div>{{ scope.row.skuName || '-' }}</div>
+                            <div v-if="scope.row.skuId" class="sku-sub">skuId:{{ scope.row.skuId }}</div>
+                        </template>
+                    </el-table-column>
                     <el-table-column property="original_price" label="原价格" width="150">
                         <template #default="scope">
-                            <div v-if="scope.row.sku_id">
-                                SKU价格: ¥{{ scope.row.original_price }}
-                            </div>
-                            <div v-else>
-                                一口价: ¥{{ scope.row.original_price }}
-                            </div>
+                            ¥{{ scope.row.originalPrice }}
                         </template>
                     </el-table-column>
                     <el-table-column property="new_price" label="修改后价格" width="150">
                         <template #default="scope">
-                            <div v-if="scope.row.sku_id">
-                                SKU价格: ¥{{ scope.row.new_price }}
-                            </div>
-                            <div v-else>
-                                一口价: ¥{{ scope.row.new_price }}
-                            </div>
+                            ¥{{ scope.row.newPrice }}
                         </template>
                     </el-table-column>
-                    <el-table-column property="msg" label="出错原因" width="150" show-overflow-tooltip />
+                    <el-table-column property="msg" label="出错原因" min-width="150" show-overflow-tooltip />
                 </el-table>
                 <el-pagination @current-change="handleCurrentChangeFail" @size-change="handleSizeChangeFail"
                     :current-page="currentPageFail" v-model:page-size="pageSizeFail" :page-sizes="[10, 50, 100]"
@@ -125,40 +109,36 @@
                         <template #default="scope">
                             <div class="flex-center">
                                 <div>
-                                    <a :href="getItemWirelessUrl(scope.row.num_iid)" target="_blank">
-                                        <el-image :src="scope.row.pic_url + '_60x60.jpg'" style="width:60px">
+                                    <a :href="getItemWirelessUrl(scope.row.numIid)" target="_blank">
+                                        <el-image :src="scope.row.picUrl + '_60x60.jpg'" style="width:60px">
                                             <template #error>&nbsp;</template>
                                         </el-image>
                                     </a>
                                 </div>
                                 <div class="ml-5">
                                     <el-row>{{ scope.row.title }}</el-row>
-                                    <el-row>ID:{{ scope.row.num_iid }}</el-row>
+                                    <el-row>ID:{{ scope.row.numIid }}</el-row>
                                 </div>
                             </div>
                         </template>
                     </el-table-column>
+                    <el-table-column property="skuName" label="SKU名称" min-width="150">
+                        <template #default="scope">
+                            <div>{{ scope.row.skuName || '-' }}</div>
+                            <div v-if="scope.row.skuId" class="sku-sub">skuId:{{ scope.row.skuId }}</div>
+                        </template>
+                    </el-table-column>
                     <el-table-column property="original_price" label="原价格" width="150">
                         <template #default="scope">
-                            <div v-if="scope.row.sku_id">
-                                SKU价格: ¥{{ scope.row.original_price }}
-                            </div>
-                            <div v-else>
-                                一口价: ¥{{ scope.row.original_price }}
-                            </div>
+                            ¥{{ scope.row.originalPrice }}
                         </template>
                     </el-table-column>
                     <el-table-column property="new_price" label="修改后价格" width="150">
                         <template #default="scope">
-                            <div v-if="scope.row.sku_id">
-                                SKU价格: ¥{{ scope.row.new_price }}
-                            </div>
-                            <div v-else>
-                                一口价: ¥{{ scope.row.new_price }}
-                            </div>
+                            ¥{{ scope.row.newPrice }}
                         </template>
                     </el-table-column>
-                    <el-table-column property="skip_reason" label="跳过原因" width="150" show-overflow-tooltip />
+                    <el-table-column property="msg" label="跳过原因" width="150" show-overflow-tooltip />
                 </el-table>
                 <el-pagination @current-change="handleCurrentChangeSkip" @size-change="handleSizeChangeSkip"
                     :current-page="currentPageSkip" v-model:page-size="pageSizeSkip" :page-sizes="[10, 50, 100]"
@@ -168,61 +148,13 @@
         </el-tabs>
     </el-dialog>
 
-    <!-- 恢复进度弹窗 -->
-    <el-dialog v-model="dialogProgressVisibleRecoverSelected" title="恢复进度" width="800" :close-on-click-modal="false">
-        <el-progress :text-inside="true" :stroke-width="26" :percentage="percentageRecoverSelected" />
-        <div class="percent-tip">
-            <div>{{ saveCompleteMsgRecoverSelected }}</div>
-        </div>
-        <template #footer>
-            <div class="dialog-footer">
-                <el-button type="primary" @click="dialogProgressVisibleRecoverSelected = false">确定</el-button>
-            </div>
-        </template>
-    </el-dialog>
-
-    <el-dialog v-model="dialogProgressVisibleRecoverAll" title="恢复进度" width="800" :close-on-click-modal="false">
-        <el-progress :text-inside="true" :stroke-width="26" :percentage="percentageRecoverAll" />
-        <div class="percent-tip">
-            <div>{{ saveCompleteMsgRecoverAll }}</div>
-        </div>
-        <template #footer>
-            <div class="dialog-footer">
-                <el-button type="primary" @click="dialogProgressVisibleRecoverAll = false">确定</el-button>
-            </div>
-        </template>
-    </el-dialog>
-
-    <el-dialog v-model="dialogProgressVisibleRetrySelected" title="重试进度" width="800" :close-on-click-modal="false">
-        <el-progress :text-inside="true" :stroke-width="26" :percentage="percentageRetrySelected" />
-        <div class="percent-tip">
-            <div>{{ saveCompleteMsgRetrySelected }}</div>
-        </div>
-        <template #footer>
-            <div class="dialog-footer">
-                <el-button type="primary" @click="dialogProgressVisibleRetrySelected = false">确定</el-button>
-            </div>
-        </template>
-    </el-dialog>
-
-    <el-dialog v-model="dialogProgressVisibleRetryAll" title="重试进度" width="800" :close-on-click-modal="false">
-        <el-progress :text-inside="true" :stroke-width="26" :percentage="percentageRetryAll" />
-        <div class="percent-tip">
-            <div>{{ saveCompleteMsgRetryAll }}</div>
-        </div>
-        <template #footer>
-            <div class="dialog-footer">
-                <el-button type="primary" @click="dialogProgressVisibleRetryAll = false">确定</el-button>
-            </div>
-        </template>
-    </el-dialog>
 </template>
 
 <script setup>
 import { reactive, ref, useTemplateRef } from 'vue'
 import request from '@/utils/request'
 import { getItemWirelessUrl } from '@/utils/index'
-import { fetchEventSource } from '@microsoft/fetch-event-source'
+import { useW2Auth } from '@/utils/w2auth'
 
 const activeName = ref('success')
 const dialogVisible = ref(false)
@@ -242,7 +174,7 @@ const totalSuccess = ref(0)
 const tableRefSuccess = useTemplateRef('tableRefSuccess')
 
 const getShopRecordDetailsSuccess = () => {
-    request.post('/api/batch-update-price/get-shop-record-details', {
+    request.post('/api/v1/batch-update-price/get-shop-record-details', {
         recordId: props.recordId,
         status: 1,
         page: currentPageSuccess.value,
@@ -250,8 +182,8 @@ const getShopRecordDetailsSuccess = () => {
     }).then(response => {
         tableDataSuccess.value = response.data.data.rows
         totalSuccess.value = response.data.data.total
-    }).catch((error) => {
-        ElMessage.error(error)
+    }).catch(() => {
+        // 错误已由 request.js 拦截器提示，避免重复弹
     })
 }
 
@@ -271,7 +203,7 @@ const totalFail = ref(0)
 const tableRefFail = useTemplateRef('tableRefFail')
 
 const getShopRecordDetailsFail = () => {
-    request.post('/api/batch-update-price/get-shop-record-details', {
+    request.post('/api/v1/batch-update-price/get-shop-record-details', {
         recordId: props.recordId,
         status: 0,
         page: currentPageFail.value,
@@ -279,8 +211,8 @@ const getShopRecordDetailsFail = () => {
     }).then(response => {
         tableDataFail.value = response.data.data.rows
         totalFail.value = response.data.data.total
-    }).catch((error) => {
-        ElMessage.error(error)
+    }).catch(() => {
+        // 错误已由 request.js 拦截器提示，避免重复弹
     })
 }
 
@@ -299,7 +231,7 @@ const pageSizeSkip = ref(10)
 const totalSkip = ref(0)
 
 const getShopRecordDetailsSkip = () => {
-    request.post('/api/batch-update-price/get-shop-record-details', {
+    request.post('/api/v1/batch-update-price/get-shop-record-details', {
         recordId: props.recordId,
         status: -1,
         page: currentPageSkip.value,
@@ -307,8 +239,8 @@ const getShopRecordDetailsSkip = () => {
     }).then(response => {
         tableDataSkip.value = response.data.data.rows
         totalSkip.value = response.data.data.total
-    }).catch((error) => {
-        ElMessage.error(error)
+    }).catch(() => {
+        // 错误已由 request.js 拦截器提示，避免重复弹
     })
 }
 
@@ -331,13 +263,45 @@ const handleTabChange = (name) => {
 }
 
 const handleOpened = () => {
+    // 每次打开都重置状态并重新加载，避免残留上一条记录的数据
+    activeName.value = 'success'
+    currentPageSuccess.value = 1
+    currentPageFail.value = 1
+    currentPageSkip.value = 1
+    tableDataSuccess.value = []
+    tableDataFail.value = []
+    tableDataSkip.value = []
+    tableRefSuccess.value?.clearSelection()
+    tableRefFail.value?.clearSelection()
     getShopRecordDetailsSuccess()
 }
 
-// 恢复相关
+// 恢复/重试：走异步任务模式（create-task），提交后由父组件弹进度框并轮询
+const emit = defineEmits(['task-created'])
+
 const form = reactive({
     exceptRecovered: false
 })
+
+// 恢复/重试提交 W2 授权预检（过期时弹授权弹窗，授权成功后自动继续）
+const { ensureW2Auth } = useW2Auth()
+
+const submitActionTask = async (action, rows) => {
+    if (!(await ensureW2Auth(() => submitActionTask(action, rows)))) return
+    request.post('/api/v1/batch-update-price/create-task', {
+        action,
+        recordId: props.recordId,
+        detailIds: rows ? rows.map(r => r.id) : [],
+        exceptRecovered: action === 'recover' ? form.exceptRecovered : false,
+        filterForm: {},
+        updateContentForm: {}
+    }).then(response => {
+        dialogVisible.value = false
+        emit('task-created', response.data.data.taskId)
+    }).catch(() => {
+        // 错误提示由 request.js 拦截器统一弹出（后端 msg），此处不重复提示
+    })
+}
 
 // 恢复选中
 const recoverSelected = () => {
@@ -355,61 +319,8 @@ const recoverSelected = () => {
             type: 'info'
         }
     ).then(() => {
-        doRecoverSelected(rows)
+        submitActionTask('recover', rows)
     }).catch(() => { })
-}
-
-const dialogProgressVisibleRecoverSelected = ref(false)
-const percentageRecoverSelected = ref(0)
-const saveCompleteMsgRecoverSelected = ref('')
-
-const doRecoverSelected = (rows) => {
-    dialogProgressVisibleRecoverSelected.value = true
-    percentageRecoverSelected.value = 0
-    saveCompleteMsgRecoverSelected.value = ''
-    try {
-        const ctrl = new AbortController()
-        fetchEventSource('/api/batch-update-price/recover-shop-record-details', {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            },
-            method: 'POST',
-            body: JSON.stringify({
-                rows,
-                exceptRecovered: form.exceptRecovered
-            }),
-            signal: ctrl.signal,
-            openWhenHidden: true,
-            onopen: (response) => {
-                console.log('连接已打开', response)
-            },
-            onmessage: (event) => {
-                const data = JSON.parse(event.data)
-                if (data.status === 'progress') {
-                    percentageRecoverSelected.value = data.progress
-                } else if (data.status === 'complete') {
-                    saveCompleteMsgRecoverSelected.value = data.message
-                    ctrl.abort()
-                    percentageRecoverSelected.value = 100
-                    getShopRecordDetailsSuccess()
-                } else if (data.status === 'error') {
-                    ElMessage.error(data.message)
-                    ctrl.abort()
-                }
-            },
-            onerror: (error) => {
-                console.error('连接发生错误:', error)
-                ElMessage.error(error.message)
-                ctrl.abort()
-            },
-            onclose: () => {
-                console.log('连接已关闭')
-            },
-        })
-    } catch (err) {
-        ElMessage.error(err.message)
-        throw new Error('终止连接')
-    }
 }
 
 // 全部恢复
@@ -423,61 +334,8 @@ const recoverAll = () => {
             type: 'info'
         }
     ).then(() => {
-        doRecoverAll()
+        submitActionTask('recover', null)
     }).catch(() => { })
-}
-
-const dialogProgressVisibleRecoverAll = ref(false)
-const percentageRecoverAll = ref(0)
-const saveCompleteMsgRecoverAll = ref('')
-
-const doRecoverAll = () => {
-    dialogProgressVisibleRecoverAll.value = true
-    percentageRecoverAll.value = 0
-    saveCompleteMsgRecoverAll.value = ''
-    try {
-        const ctrl = new AbortController()
-        fetchEventSource('/api/batch-update-price/recover-shop-record', {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            },
-            method: 'POST',
-            body: JSON.stringify({
-                recordId: props.recordId,
-                exceptRecovered: form.exceptRecovered
-            }),
-            signal: ctrl.signal,
-            openWhenHidden: true,
-            onopen: (response) => {
-                console.log('连接已打开', response)
-            },
-            onmessage: (event) => {
-                const data = JSON.parse(event.data)
-                if (data.status === 'progress') {
-                    percentageRecoverAll.value = data.progress
-                } else if (data.status === 'complete') {
-                    saveCompleteMsgRecoverAll.value = data.message
-                    ctrl.abort()
-                    percentageRecoverAll.value = 100
-                    getShopRecordDetailsSuccess()
-                } else if (data.status === 'error') {
-                    ElMessage.error(data.message)
-                    ctrl.abort()
-                }
-            },
-            onerror: (error) => {
-                console.error('连接发生错误:', error)
-                ElMessage.error(error.message)
-                ctrl.abort()
-            },
-            onclose: () => {
-                console.log('连接已关闭')
-            },
-        })
-    } catch (err) {
-        ElMessage.error(err.message)
-        throw new Error('终止连接')
-    }
 }
 
 // 重试相关
@@ -497,60 +355,8 @@ const retrySelected = () => {
             type: 'info'
         }
     ).then(() => {
-        doRetrySelected(rows)
+        submitActionTask('retry', rows)
     }).catch(() => { })
-}
-
-const dialogProgressVisibleRetrySelected = ref(false)
-const percentageRetrySelected = ref(0)
-const saveCompleteMsgRetrySelected = ref('')
-
-const doRetrySelected = (rows) => {
-    dialogProgressVisibleRetrySelected.value = true
-    percentageRetrySelected.value = 0
-    saveCompleteMsgRetrySelected.value = ''
-    try {
-        const ctrl = new AbortController()
-        fetchEventSource('/api/batch-update-price/retry-shop-record-details', {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            },
-            method: 'POST',
-            body: JSON.stringify({
-                rows
-            }),
-            signal: ctrl.signal,
-            openWhenHidden: true,
-            onopen: (response) => {
-                console.log('连接已打开', response)
-            },
-            onmessage: (event) => {
-                const data = JSON.parse(event.data)
-                if (data.status === 'progress') {
-                    percentageRetrySelected.value = data.progress
-                } else if (data.status === 'complete') {
-                    saveCompleteMsgRetrySelected.value = data.message
-                    ctrl.abort()
-                    percentageRetrySelected.value = 100
-                    getShopRecordDetailsFail()
-                } else if (data.status === 'error') {
-                    ElMessage.error(data.message)
-                    ctrl.abort()
-                }
-            },
-            onerror: (error) => {
-                console.error('连接发生错误:', error)
-                ElMessage.error(error.message)
-                ctrl.abort()
-            },
-            onclose: () => {
-                console.log('连接已关闭')
-            },
-        })
-    } catch (err) {
-        ElMessage.error(err.message)
-        throw new Error('终止连接')
-    }
 }
 
 // 全部重试
@@ -564,60 +370,8 @@ const retryAll = () => {
             type: 'info'
         }
     ).then(() => {
-        doRetryAll()
+        submitActionTask('retry', null)
     }).catch(() => { })
-}
-
-const dialogProgressVisibleRetryAll = ref(false)
-const percentageRetryAll = ref(0)
-const saveCompleteMsgRetryAll = ref('')
-
-const doRetryAll = () => {
-    dialogProgressVisibleRetryAll.value = true
-    percentageRetryAll.value = 0
-    saveCompleteMsgRetryAll.value = ''
-    try {
-        const ctrl = new AbortController()
-        fetchEventSource('/api/batch-update-price/retry-shop-record', {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            },
-            method: 'POST',
-            body: JSON.stringify({
-                recordId: props.recordId
-            }),
-            signal: ctrl.signal,
-            openWhenHidden: true,
-            onopen: (response) => {
-                console.log('连接已打开', response)
-            },
-            onmessage: (event) => {
-                const data = JSON.parse(event.data)
-                if (data.status === 'progress') {
-                    percentageRetryAll.value = data.progress
-                } else if (data.status === 'complete') {
-                    saveCompleteMsgRetryAll.value = data.message
-                    ctrl.abort()
-                    percentageRetryAll.value = 100
-                    getShopRecordDetailsFail()
-                } else if (data.status === 'error') {
-                    ElMessage.error(data.message)
-                    ctrl.abort()
-                }
-            },
-            onerror: (error) => {
-                console.error('连接发生错误:', error)
-                ElMessage.error(error.message)
-                ctrl.abort()
-            },
-            onclose: () => {
-                console.log('连接已关闭')
-            },
-        })
-    } catch (err) {
-        ElMessage.error(err.message)
-        throw new Error('终止连接')
-    }
 }
 </script>
 
@@ -629,15 +383,6 @@ const doRetryAll = () => {
 
 .el-pagination {
     margin-top: 15px;
-}
-
-.dialog-footer {
-    padding-right: 15px;
-}
-
-.percent-tip {
-    margin-top: 10px;
-    line-height: 2em;
 }
 
 .mt-5 {
@@ -656,5 +401,20 @@ const doRetryAll = () => {
     display: flex;
     align-items: center;
     gap: 15px;
+}
+.recover-switch {
+    gap: 8px;
+    flex-shrink: 0;
+}
+.switch-label {
+    white-space: nowrap;
+    font-size: 12px;
+    color: #606266;
+    line-height: 24px;
+}
+
+.sku-sub {
+    font-size: 12px;
+    color: #999;
 }
 </style>

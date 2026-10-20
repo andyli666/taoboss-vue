@@ -1,9 +1,10 @@
 <template>
     <!-- <el-config-provider size="small"> -->
-    <el-dialog v-model="dialogVisible" title="商品选择" width="1050" :close-on-click-modal="false" align-center draggable>
+    <el-dialog v-model="dialogVisible" title="商品选择" width="1050" :close-on-click-modal="false" align-center draggable
+        @open="handleOpen">
         <el-form :inline="true" :model="form" class="item-search-form" @submit.prevent style="width:100%">
             <el-form-item label="上架状态">
-                <el-select v-model="form.approveStatus" style="width:180px" @change="getItems">
+                <el-select v-model="form.approveStatus" style="width:180px">
                     <el-option label="全部" value="0" />
                     <el-option label="出售中的商品" value="onsale" />
                     <el-option label="仓库中的商品" value="instock" />
@@ -32,23 +33,35 @@
                     clearable @change="handleInputTagChangeOuterId" style="width:180px" />
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="getItems" :loading="loading">查询</el-button>
+                <el-button type="primary" @click="getItems(true)" :loading="loading">查询</el-button>
             </el-form-item>
         </el-form>
         <el-table :data="tableData" :tree-props="treeProps" row-key="id" ref="multipleTableRef"
             @sort-change="handleSortChange">
-            <el-table-column type="selection" width="55" :reserve-selection="true" :selectable="selectable" />
-            <el-table-column property="pic_url" label="主图" width="100">
+            <el-table-column type="selection" width="40" :reserve-selection="true" :selectable="selectable" />
+            <el-table-column label="商品" width="210">
                 <template #default="scope">
-                    <a :href="getItemWirelessUrl(scope.row.num_iid)" target="_blank">
-                        <el-image :src="scope.row.pic_url" style="width: 50px;">
-                            <template #error>&nbsp;</template>
-                        </el-image>
-                    </a>
+                    <div class="item-cell">
+                        <a v-if="scope.row.num_iid" :href="getItemWirelessUrl(scope.row.num_iid)" target="_blank">
+                            <el-image :src="scope.row.pic_url" style="width: 50px;">
+                                <template #error>&nbsp;</template>
+                            </el-image>
+                        </a>
+                        <div class="item-info">
+                            <el-row v-if="scope.row.num_iid">ID:{{ scope.row.num_iid }}</el-row>
+                            <el-row v-if="scope.row.num_iid">状态:{{ getApproveStatus(scope.row.approve_status) }}</el-row>
+                            <el-row>商家编码:{{ scope.row.outer_id ?? '无' }}</el-row>
+                        </div>
+                    </div>
                 </template>
             </el-table-column>
-            <el-table-column property="num_iid" label="ID" width="135" />
-            <el-table-column property="title" label="标题" />
+            <el-table-column property="title" label="标题" min-width="200" show-overflow-tooltip />
+            <el-table-column property="price" label="价格" width="100" sortable="custom" />
+            <el-table-column label="库存" width="90" prop="num" sortable="custom">
+                <template #default="scope">
+                    {{ scope.row.sku_id !== undefined ? scope.row.quantity : scope.row.num }}
+                </template>
+            </el-table-column>
             <el-table-column v-if="props.showDelistTime" property="delist_time" label="自动上下架时间" width="210"
                 sortable="custom">
                 <template #default="scope">
@@ -72,9 +85,9 @@
 </template>
 
 <script setup>
-import { reactive, ref, onMounted, watch } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import request from '@/utils/request'
-import { deepCopy, getItemWirelessUrl, getWeek } from '@/utils/index'
+import { deepCopy, getItemWirelessUrl, getWeek, getApproveStatus } from '@/utils/index'
 
 const dialogVisible = ref(false)
 const tableData = ref([])
@@ -98,7 +111,7 @@ const formLabelWidth = '100px'
 
 const form = reactive({
     title: '',
-    approveStatus: '0',
+    approveStatus: 'onsale',
     shopCategory: null,
     numIid: [],
     outerId: [],
@@ -113,11 +126,12 @@ const props = defineProps({
 })
 
 const loading = ref(false)
-const getItems = () => {
+// refreshSync=true（用户主动点查询/首次打开弹窗）时后端强制增量同步淘宝商品，翻页/排序走 60s 节流同步
+const getItems = (refreshSync = false) => {
     loading.value = true
-    request.post('/api/item/get-items', {
-        title_contains: form.title,
-        approve_status: form.approveStatus,
+    request.post('/api/v1/item/get-items', {
+        title: form.title,
+        approveStatus: form.approveStatus,
         shopCategory: form.shopCategory,
         numIid: form.numIid,
         outerId: form.outerId,
@@ -128,14 +142,14 @@ const getItems = () => {
         with_sku: props.withSku ? 1 : 0,
         sort: sort.value,
         order: order.value,
-        pagination: 1//远程分页
+        refreshSync,
     }).then(response => {
         loading.value = false
-        tableData.value = formatItems(response.data.rows)
-        total.value = response.data.total
-    }).catch((error) => {
+        tableData.value = formatItems(response.data.data.rows)
+        total.value = response.data.data.total
+    }).catch(() => {
+        // 错误已由 request.js 拦截器提示
         loading.value = false
-        ElMessage.error(error)
     })
 }
 const handleCurrentChange = (val) => {
@@ -161,6 +175,7 @@ const formatItems = (items) => {
                     child.title = sku.properties_name.replaceAll(/\d+:/g, "")
                     child.parent_id = item.num_iid
                     child.quantity = sku.quantity
+                    child.price = sku.price
                     children.push(child)
                 })
             }
@@ -273,16 +288,27 @@ const selectable = (row) => {
 
 // 排序
 const handleSortChange = (column) => {
-    sort.value = column.prop
-    order.value = column.order === 'ascending' ? 'asc' : 'desc'
+    if (!column.order) {
+        // 第三次点击列头取消排序，恢复默认（后端按 id ASC）
+        sort.value = ''
+        order.value = ''
+    } else {
+        sort.value = column.prop
+        order.value = column.order === 'ascending' ? 'asc' : 'desc'
+    }
     getItems()
 }
 
 //
-onMounted(() => {
-    getItems()
-    getSellerCats()
-})
+// 首次打开弹窗才加载商品列表和店铺分类（多次打开只加载一次，翻页/排序/查询仍会重新请求）
+let hasLoaded = false
+const handleOpen = () => {
+    if (!hasLoaded) {
+        hasLoaded = true
+        getItems(true)
+        getSellerCats()
+    }
+}
 const data = ref([])
 // 获取店铺分类
 const getSellerCats = () => {
@@ -292,8 +318,8 @@ const getSellerCats = () => {
         } else {
             data.value = response.data
         }
-    }).catch((error) => {
-        ElMessage.error(error)
+    }).catch(() => {
+        // 错误已由 request.js 拦截器提示
     })
 }
 </script>
@@ -308,5 +334,21 @@ const getSellerCats = () => {
 
 .dialog-footer {
     padding-right: 15px;
+}
+
+/* 商品列：图片 + 右侧信息 */
+.item-cell {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.item-info {
+    flex: 1;
+    min-width: 0;
+    font-size: 12px;
+    line-height: 1.6;
+    color: #909399;
+    word-break: break-all;
 }
 </style>

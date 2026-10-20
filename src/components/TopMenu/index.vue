@@ -81,15 +81,15 @@
                 </div> -->
 
                 <div class="trial-info">
-                    <span class="trial-days">剩余时间：<strong>{{ trialDays }}</strong> 天</span>
+                    <span v-if="planName" class="trial-days">当前版本：<strong>{{ planName }}</strong></span>
+                    <span v-if="trialDays > 0" class="trial-days">剩余时间：<strong>{{ trialDays }}</strong> 天</span>
                     <button class="renew-btn" @click="handleRenew">续费/升级</button>
-                    <!-- <button class="renew-btn" @click="showRenewDialog = true">续费升级</button> -->
                 </div>
             </div>
         </div>
 
         <!-- ====== 续费弹窗 ====== -->
-        <el-dialog v-model="showRenewDialog" title="续费升级" width="520px" :close-on-click-modal="false"
+        <el-dialog v-model="showRenewDialog" title="版本区别" width="850px" :close-on-click-modal="false"
             class="renew-dialog">
             <div class="renew-plans">
                 <div v-for="plan in renewPlans" :key="plan.value" class="renew-plan"
@@ -102,6 +102,7 @@
                         <span class="price">¥{{ plan.price }}</span>
                         <span class="period">/ {{ plan.period }}</span>
                     </div>
+                    <div v-if="plan.dailyPrice" class="plan-daily">每天只需 ¥{{ plan.dailyPrice }}</div>
                     <ul class="plan-features">
                         <li v-for="feature in plan.features" :key="feature">✓ {{ feature }}</li>
                     </ul>
@@ -109,7 +110,7 @@
             </div>
             <template #footer>
                 <el-button @click="showRenewDialog = false">稍后再说</el-button>
-                <el-button type="primary" @click="handleRenewConfirm">立即续费</el-button>
+                <el-button type="primary" @click="handleRenewConfirm">立即续费/升级</el-button>
             </template>
         </el-dialog>
     </header>
@@ -119,6 +120,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import request from '@/utils/request'
 import {
     DataAnalysis,
     TrendCharts,
@@ -141,6 +143,28 @@ const menuList = [
         label: '工作台',
         icon: 'Monitor',
         children: null,
+    },
+    {
+        index: '/marketing',
+        label: '关联营销',
+        icon: 'Promotion',
+        children: [
+            { index: '/recommend/new?tab=system', label: '新建活动', icon: '✨', desc: '利用模板自动生成关联营销' },
+            { index: '/recommend/new?tab=custom', label: '自定义图片', icon: '🖼️', desc: '上传活动图片批量发布到商品' },
+            { index: '/recommend/new?tab=map', label: '自定义热区', icon: '🎯', desc: '用热区制作复杂图片活动批量发布到商品' },
+            { index: '/recommend/list', label: '活动列表', icon: '📋', desc: '管理所有关联营销活动' },
+        ],
+    },
+    {
+        index: '/batch-update',
+        label: '批量修改',
+        icon: 'EditPen',
+        children: [
+            { index: '/batch-update/title-v2', label: '批量修改标题', icon: '✏️', desc: '可定时执行' },
+            { index: '/batch-update/shop-title', label: '批量修改导购标题', icon: '📝', desc: '可定时执行' },
+            { index: '/batch-update/price', label: '批量修改价格', icon: '🏷️', desc: '可定时执行' },
+            { index: '/batch-update/stock', label: '批量修改库存', icon: '📦', desc: '可定时执行' },
+        ],
     },
     {
         index: '/statistics',
@@ -174,22 +198,10 @@ const menuList = [
         ],
     },
     {
-        index: '/marketing',
-        label: '营销',
-        icon: 'Promotion',
-        children: [
-            { index: '/recommend/new?tab=system', label: '关联营销-新建活动', icon: '✨', desc: '利用模板自动生成关联营销' },
-            { index: '/recommend/new?tab=custom', label: '关联营销-自定义图片', icon: '🖼️', desc: '上传活动图片批量发布到商品' },
-            { index: '/recommend/new?tab=map', label: '关联营销-自定义热区', icon: '🎯', desc: '用热区制作复杂图片活动批量发布到商品' },
-            { index: '/recommend/list', label: '关联营销-活动列表', icon: '📋', desc: '管理所有关联营销活动' },
-        ],
-    },
-    {
         index: '/tools',
         label: '工具',
         icon: 'Setting',
         children: [
-            { index: '/batch-update/title', label: '批量修改', icon: '✏️', desc: '标题/价格/库存批量改' },
             { index: '/timing-list-delist/list', label: '定时上下架', icon: '⏰', desc: '定时上架/下架商品' },
             { index: '/delist-optimize/list', label: '上下架时间优化🔥', icon: '📋', desc: '自动上下架时间修改到流量高峰时段' },
             { index: '/item-timing-update-quantity/list', label: '定时修改库存', icon: '📦', desc: '定时更新商品库存' },
@@ -211,28 +223,30 @@ const selectedPlan = ref('pro')
 
 const renewPlans = [
     {
-        value: 'basic',
-        name: '基础版',
-        price: 299,
+        value: 'free',
+        name: '免费版',
+        price: 0,
+        period: '免费试用',
+        features: ['批量修改单次任务限额 100 个商品', '批量修改单日限额 1000 个'],
+        recommend: false,
+    },
+    {
+        value: 'standard',
+        name: '标准版',
+        price: 128,
         period: '年',
-        features: ['基础数据分析', '商品成本管理', '批量修改工具', '7×12 客服支持'],
+        dailyPrice: '0.35',
+        features: ['批量修改单次任务限额 10000 个商品', '批量修改单日限额 50000 个'],
         recommend: false,
     },
     {
         value: 'pro',
         name: '专业版',
-        price: 699,
+        price: 198,
         period: '年',
-        features: ['高级利润分析', '多店铺管理', 'API 数据导出', '自动财务报表', '专属客户经理'],
+        dailyPrice: '0.54',
+        features: ['批量修改单次任务限额 50000 个商品', '批量修改单日不限量'],
         recommend: true,
-    },
-    {
-        value: 'enterprise',
-        name: '企业版',
-        price: 1999,
-        period: '年',
-        features: ['全部高级功能', '定制化报表', '私有化部署', '7×24 专属支持', '不限店铺数'],
-        recommend: false,
     },
 ]
 
@@ -288,15 +302,15 @@ const handleUserClick = () => {
 }
 
 const handleRenewConfirm = () => {
-    ElMessage.success(`已选择 ${renewPlans.find(p => p.value === selectedPlan.value)?.name}，正在跳转支付...`)
     showRenewDialog.value = false
-}
-
-const handleRenew = () => {
     window.open(
         'https://fuwu.taobao.com/ser/detail.htm?service_code=ts-1816190&code=ts-1816190&selected_item_code=ts-1816190&isOpenSkuDialog=1',
         '_blank'
     )
+}
+
+const handleRenew = () => {
+    showRenewDialog.value = true
 }
 
 // ============================================================
@@ -307,6 +321,7 @@ const sellerNick = ref('')
 const shopTitle = ref('')
 const userAvatar = ref('')
 const trialDays = ref(0)
+const planName = ref('') // 当前版本名称
 
 // 获取用户信息并计算剩余天数
 const loadUserInfo = () => {
@@ -331,8 +346,18 @@ const loadUserInfo = () => {
     }
 }
 
+// 获取版本限额状态（含当前版本名称）
+const loadQuotaStatus = () => {
+    request.get('/api/v1/batch-update-price/quota-status').then(response => {
+        planName.value = response.data.data.planName || ''
+    }).catch(() => {
+        // Go 后端未启动时静默忽略
+    })
+}
+
 onMounted(() => {
     loadUserInfo()
+    loadQuotaStatus()
 })
 </script>
 
@@ -395,6 +420,7 @@ onMounted(() => {
    ============================================================ */
 .menu-center {
     flex: 1;
+    min-width: 0;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -411,7 +437,7 @@ onMounted(() => {
 }
 
 .menu-item {
-    padding: 0 18px;
+    padding: 0 8px;
     height: 42px;
     display: flex;
     align-items: center;
@@ -565,13 +591,14 @@ onMounted(() => {
     display: flex;
     align-items: center;
     gap: 14px;
+    white-space: nowrap;
 }
 
 .icon-btn {
     display: flex;
     align-items: center;
     gap: 5px;
-    padding: 5px 12px;
+    padding: 5px 0;
     border: none;
     background: transparent;
     border-radius: 6px;
@@ -603,13 +630,17 @@ onMounted(() => {
 .trial-info {
     display: flex;
     align-items: center;
+    flex-wrap: nowrap;
+    flex-shrink: 0;
     gap: 10px;
-    padding: 5px 16px 5px 20px;
+    /* padding: 5px 16px 5px 20px; */
+    padding: 5px 0 5px 0;
     /* background: rgba(255, 255, 255, 0.10);
     border-radius: 18px; */
     /* border: 1px solid rgba(255, 255, 255, 0.08); */
     font-size: 13px;
     color: rgba(255, 255, 255, 0.85);
+    white-space: nowrap;
 }
 
 .trial-days strong {
@@ -626,6 +657,9 @@ onMounted(() => {
     background: #f46615;
     color: #fff;
     border-radius: 5px;
+    padding: 1px 6px;
+    flex-shrink: 0;
+    white-space: nowrap;
 }
 
 .renew-btn:hover {
@@ -723,6 +757,12 @@ onMounted(() => {
     color: #86909C;
 }
 
+.plan-daily {
+    margin-top: 4px;
+    font-size: 12px;
+    color: #e6a23c;
+}
+
 .plan-features {
     list-style: none;
     padding: 0;
@@ -738,6 +778,40 @@ onMounted(() => {
 /* ============================================================
    响应式
    ============================================================ */
+/* #app min-width 1200px 下，1200~1400px 区间内容偏挤，收紧间距字号防止菜单与右侧重叠 */
+@media screen and (max-width: 1400px) {
+    .menu-container {
+        padding: 0 16px;
+        gap: 12px;
+    }
+
+    .menu-item {
+        padding: 0 6px;
+        font-size: 14px;
+        gap: 6px;
+    }
+
+    .menu-center {
+        gap: 4px;
+    }
+
+    .menu-right {
+        gap: 8px;
+    }
+
+    .icon-btn {
+        padding: 5px 8px;
+    }
+
+    .service-label {
+        display: none;
+    }
+
+    .trial-info {
+        padding: 5px 12px;
+    }
+}
+
 @media screen and (max-width: 1200px) {
     .menu-container {
         padding: 0 16px;
@@ -745,7 +819,7 @@ onMounted(() => {
     }
 
     .menu-item {
-        padding: 0 12px;
+        padding: 0 6px;
         font-size: 14px;
     }
 
@@ -766,7 +840,7 @@ onMounted(() => {
     }
 
     .menu-item {
-        padding: 0 10px;
+        padding: 0 6px;
         font-size: 13px;
         height: 36px;
     }
@@ -778,6 +852,10 @@ onMounted(() => {
     .trial-info {
         padding: 4px 12px;
         font-size: 12px;
+    }
+
+    .trial-days {
+        display: none;
     }
 
     .renew-btn {
@@ -818,7 +896,7 @@ onMounted(() => {
     }
 
     .menu-item {
-        padding: 0 8px;
+        padding: 0 6px;
         font-size: 12px;
         height: 30px;
         gap: 4px;

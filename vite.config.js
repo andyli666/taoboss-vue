@@ -34,10 +34,16 @@ export default defineConfig({
   },
   server: {
     proxy: {
+      // Go 新接口（优先匹配）
+      '/api/v1': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+      // 老 PHP 接口
       '/api': {
-        target: 'https://api.taoboss.com.cn/',  // 后端API地址
-        changeOrigin: true,  // 是否修改请求头中的Origin
-        rewrite: (path) => path.replace(/^\/api/, ''), // 重写路径
+        target: 'https://api.taoboss.com.cn/',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
       },
     },
   },

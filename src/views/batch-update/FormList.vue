@@ -1,7 +1,7 @@
 <template>
     <el-form :inline="true" :model="form" class="item-search-form" style="width:100%">
         <el-form-item label="上架状态">
-            <el-select v-model="form.approveStatus" style="width:180px" @change="getItems">
+            <el-select v-model="form.approveStatus" style="width:180px">
                 <el-option label="全部" value="0" />
                 <el-option label="出售中的商品" value="onsale" />
                 <el-option label="仓库中的商品" value="instock" />
@@ -30,7 +30,7 @@
                 @change="handleInputTagChangeOuterId" style="width:180px" />
         </el-form-item>
         <el-form-item>
-            <el-button type="primary" @click="getItems" :loading="loading" :icon="Search">
+            <el-button type="primary" @click="getItems(true)" :loading="loading" :icon="Search">
                 {{ loading ? '查询中...' : '查询' }}
             </el-button>
         </el-form-item>
@@ -101,7 +101,8 @@ const props = defineProps({
 const emit = defineEmits(['loaded'])
 
 const loading = ref(false)
-const getItems = () => {
+// refreshSync=true（用户主动点查询/首次进入页面）时后端强制增量同步淘宝商品，翻页/排序走 60s 节流同步
+const getItems = (refreshSync = false) => {
     if (!checkInputTagNumIid()) {
         return
     }
@@ -119,19 +120,19 @@ const getItems = () => {
         with_sku: props.withSku ? 1 : 0,
         sort: props.sort,
         order: props.order,
-        pagination: 1
+        pagination: 1,
+        refreshSync
     }
     // console.log({ ...form, ...params })
     // emit('loaded', [], 0)
     // return
-    request.post('/api/item/get-items', { ...form, ...params }).then(response => {
+    request.post('/api/v1/item/get-items', { ...form, ...params }).then(response => {
         loading.value = false
-        // tableData.value = formatItems(response.data.rows)
-        // total.value = response.data.total
-        emit('loaded', formatItems(response.data.rows), response.data.total)
-    }).catch((error) => {
+        const data = response.data.data
+        emit('loaded', formatItems(data.rows), data.total)
+    }).catch(() => {
+        // 错误已由 request.js 拦截器提示，避免重复弹
         loading.value = false
-        ElMessage.error(error)
     })
 }
 
@@ -150,6 +151,7 @@ const formatItems = (items) => {
                     child.title = sku.properties_name.replaceAll(/\d+:/g, "")
                     child.parent_id = item.num_iid
                     child.quantity = sku.quantity
+                    child.price = sku.price
                     children.push(child)
                 })
             }
@@ -157,6 +159,7 @@ const formatItems = (items) => {
         }
         item.id = item.num_iid // 表格row-key用
         item.newTitle = item.title
+        item.newShoppingTitle = item.shopping_title // 导购标题编辑字段（批量改导购标题列表修改用）
         newItems.push(item)
     })
     return newItems
@@ -170,9 +173,12 @@ watch(() => props.pageSize, () => { getItems() })
 
 //
 onMounted(() => {
-    getItems()
+    getItems(true)
     getSellerCats()
 })
+
+// 供父组件通过 ref 调用（script setup 组件默认封闭，需显式暴露）
+defineExpose({ getItems })
 
 
 const data = ref([])
@@ -184,8 +190,8 @@ const getSellerCats = () => {
         } else {
             data.value = response.data
         }
-    }).catch((error) => {
-        ElMessage.error(error)
+    }).catch(() => {
+        // 错误已由 request.js 拦截器提示，避免重复弹
     })
 }
 </script>

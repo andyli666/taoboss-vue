@@ -243,6 +243,30 @@ export const router = createRouter({
                     },
                     meta: { title: '批量修改价格' }
                 },
+                {
+                    path: 'title-v2',
+                    components: {
+                        default: () => import('./views/batch-update/title/index.vue'),
+                        aside: () => import('./views/batch-update/components/Aside.vue')
+                    },
+                    meta: { title: '批量修改标题' }
+                },
+                {
+                    path: 'shop-title',
+                    components: {
+                        default: () => import('./views/batch-update/shop-title/index.vue'),
+                        aside: () => import('./views/batch-update/components/Aside.vue')
+                    },
+                    meta: { title: '批量修改导购标题' }
+                },
+                {
+                    path: 'stock',
+                    components: {
+                        default: () => import('./views/batch-update/stock/index.vue'),
+                        aside: () => import('./views/batch-update/components/Aside.vue')
+                    },
+                    meta: { title: '批量修改库存' }
+                },
             ]
         },
         {

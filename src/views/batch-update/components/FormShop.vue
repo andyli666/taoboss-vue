@@ -1,7 +1,7 @@
 <template>
     <el-form :inline="true" :model="form" class="item-search-form" style="width:100%">
         <el-form-item label="上架状态">
-            <el-select v-model="form.approveStatus" style="width:180px" @change="getItems" ref="approveStatusRef">
+            <el-select v-model="form.approveStatus" style="width:180px" ref="approveStatusRef">
                 <el-option label="全部" value="0" />
                 <el-option label="出售中的商品" value="onsale" />
                 <el-option label="仓库中的商品" value="instock" />
@@ -167,43 +167,9 @@ const formatItems = (items) => {
     return newItems
 }
 
-// 获取修改范围文字
-const approveStatusRef = useTemplateRef('approveStatusRef')
-const shopCategoryRef = useTemplateRef('shopCategoryRef')
-const getUpdateRangeText = () => {
-    let text = ''
-    text += '上架状态：' + approveStatusRef.value.selectedLabel
-    const shopCategory = shopCategoryRef.value.selectRef.selectedLabel
-    if (shopCategory != '') {
-        text += '\r\n店铺分类：' + shopCategory
-    }
-    if (form.priceStart != null || form.priceEnd != null) {
-        text += '\r\n价格区间：'
-        if (form.priceStart != null) {
-            text += form.priceStart + '~'
-        }
-        if (form.priceEnd != null) {
-            text += form.priceEnd
-        }
-    }
-    if (form.title != '') {
-        text += '\r\n标题包含：' + form.title
-    }
-    if (form.exceptTitle.length) {
-        text += '\r\n标题排除：' + form.exceptTitle.join(',')
-    }
-    if (form.numIid.length) {
-        text += '\r\n指定商品：' + form.numIid.length + '个'
-    }
-    if (form.exceptNumIid.length) {
-        text += '\r\n排除商品：' + form.exceptNumIid.length + '个'
-    }
-    return text
-}
-
 defineExpose({
     getItems,
-    getUpdateRangeText
+    form
 })
 
 //
