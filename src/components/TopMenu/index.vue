@@ -359,6 +359,11 @@ onMounted(() => {
     loadUserInfo()
     loadQuotaStatus()
 })
+
+// 暴露给父组件（App.vue 订阅到期预警横幅）
+defineExpose({
+    openRenewDialog: handleRenew,
+})
 </script>
 
 <style scoped>
