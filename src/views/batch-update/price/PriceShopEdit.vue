@@ -227,7 +227,7 @@
                 </div>
             </template>
         </el-table-column>
-        <el-table-column label="SKU名称" min-width="140">
+        <el-table-column label="SKU名称" min-width="150">
             <template #default="scope">
                 <div v-if="scope.row.newSkus && scope.row.newSkus.length">
                     <div v-for="(sku, idx) in scope.row.newSkus" :key="idx" class="sku-line">
@@ -272,7 +272,7 @@
                 <div v-else class="gray-tip">无SKU</div>
             </template>
         </el-table-column>
-        <el-table-column label="修改状态" min-width="100">
+        <el-table-column label="修改状态" width="100">
             <template #default="scope">
                 <el-tag v-if="scope.row.hasChange" type="success" size="small">待修改</el-tag>
                 <el-tag v-else type="info" size="small">无变化</el-tag>
