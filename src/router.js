@@ -267,6 +267,14 @@ export const router = createRouter({
                     },
                     meta: { title: '批量修改库存' }
                 },
+                {
+                    path: 'cat-prop',
+                    components: {
+                        default: () => import('./views/batch-update/cat-prop/index.vue'),
+                        aside: () => import('./views/batch-update/components/Aside.vue')
+                    },
+                    meta: { title: '批量修改类目属性' }
+                },
             ]
         },
         {

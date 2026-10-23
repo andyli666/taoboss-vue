@@ -104,6 +104,34 @@ export const getApproveStatus = (approveStatus) => {
     return '未知状态'
 }
 
+// 复制文本到剪贴板，成功后提示"复制成功"，返回是否已发起复制
+export const copyText = (text) => {
+    const str = String(text ?? '')
+    if (!str) {
+        return false
+    }
+    const done = () => ElMessage.success('复制成功')
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(str).then(done).catch(() => copyTextFallback(str, done))
+    } else {
+        copyTextFallback(str, done)
+    }
+    return true
+}
+
+// http 环境下 clipboard API 不可用时的降级方案
+const copyTextFallback = (text, done) => {
+    const textarea = document.createElement('textarea')
+    textarea.value = text
+    textarea.style.position = 'fixed'
+    textarea.style.opacity = '0'
+    document.body.appendChild(textarea)
+    textarea.select()
+    document.execCommand('copy')
+    document.body.removeChild(textarea)
+    done()
+}
+
 // 获得字符串实际长度，中文2，英文1
 export const getLength = (str) => {
     var realLength = 0, len = str.length, charCode = -1

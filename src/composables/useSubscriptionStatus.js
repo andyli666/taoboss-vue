@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 
 /**
- * 订阅到期状态（套餐到期前 3 天预警）
+ * 订阅到期状态（套餐到期前 7 天预警）
  */
 export function useSubscriptionStatus() {
     const trialDays = ref(0)
@@ -28,8 +28,8 @@ export function useSubscriptionStatus() {
         }
     }
 
-    // 当前是否处于预警期：0 < 剩余天数 <= 3
-    const isWarningPeriod = () => trialDays.value > 0 && trialDays.value <= 3
+    // 当前是否处于预警期：0 < 剩余天数 <= 7
+    const isWarningPeriod = () => trialDays.value > 0 && trialDays.value <= 7
 
     // 当天是否已经提示过（localStorage 去重）
     const warnedKey = 'sub_warned_date'

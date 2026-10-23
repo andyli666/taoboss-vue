@@ -96,7 +96,20 @@
                             ¥{{ scope.row.newPrice }}
                         </template>
                     </el-table-column>
-                    <el-table-column property="msg" label="出错原因" min-width="150" show-overflow-tooltip />
+                    <el-table-column label="出错原因" min-width="150">
+                        <template #default="scope">
+                            <div class="msg-cell">
+                                <el-tooltip :content="scope.row.msg" placement="top" :show-after="300">
+                                    <span class="msg-text">{{ scope.row.msg }}</span>
+                                </el-tooltip>
+                                <el-tooltip content="复制" placement="top" :show-after="200">
+                                    <el-icon class="copy-icon" @click="copyText(scope.row.msg)">
+                                        <DocumentCopy />
+                                    </el-icon>
+                                </el-tooltip>
+                            </div>
+                        </template>
+                    </el-table-column>
                 </el-table>
                 <el-pagination @current-change="handleCurrentChangeFail" @size-change="handleSizeChangeFail"
                     :current-page="currentPageFail" v-model:page-size="pageSizeFail" :page-sizes="[10, 50, 100]"
@@ -153,7 +166,8 @@
 <script setup>
 import { reactive, ref, useTemplateRef } from 'vue'
 import request from '@/utils/request'
-import { getItemWirelessUrl } from '@/utils/index'
+import { getItemWirelessUrl, copyText } from '@/utils/index'
+import { DocumentCopy } from '@element-plus/icons-vue'
 import { useW2Auth } from '@/utils/w2auth'
 
 const activeName = ref('success')
@@ -416,5 +430,30 @@ const retryAll = () => {
 .sku-sub {
     font-size: 12px;
     color: #999;
+}
+
+.msg-cell {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+}
+
+.msg-text {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.copy-icon {
+    flex-shrink: 0;
+    margin-left: 4px;
+    color: #909399;
+    cursor: pointer;
+}
+
+.copy-icon:hover {
+    color: #409eff;
 }
 </style>

@@ -164,6 +164,7 @@ const menuList = [
             { index: '/batch-update/shop-title', label: '批量修改导购标题', icon: '📝', desc: '可定时执行' },
             { index: '/batch-update/price', label: '批量修改价格', icon: '🏷️', desc: '可定时执行' },
             { index: '/batch-update/stock', label: '批量修改库存', icon: '📦', desc: '可定时执行' },
+            { index: '/batch-update/cat-prop', label: '批量修改类目属性', icon: '🧩', desc: '可定时执行' },
         ],
     },
     {
@@ -237,7 +238,7 @@ const renewPlans = [
         period: '年',
         dailyPrice: '0.35',
         features: ['批量修改单次任务限额 10000 个商品', '批量修改单日限额 50000 个'],
-        recommend: false,
+        recommend: true,
     },
     {
         value: 'pro',
@@ -246,7 +247,7 @@ const renewPlans = [
         period: '年',
         dailyPrice: '0.54',
         features: ['批量修改单次任务限额 50000 个商品', '批量修改单日不限量'],
-        recommend: true,
+        recommend: false,
     },
 ]
 
