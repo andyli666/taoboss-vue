@@ -275,6 +275,14 @@ export const router = createRouter({
                     },
                     meta: { title: '批量修改类目属性' }
                 },
+                {
+                    path: 'food-prop',
+                    components: {
+                        default: () => import('./views/batch-update/food-prop/index.vue'),
+                        aside: () => import('./views/batch-update/components/Aside.vue')
+                    },
+                    meta: { title: '批量修改食品属性' }
+                },
             ]
         },
         {

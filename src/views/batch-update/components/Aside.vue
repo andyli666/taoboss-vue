@@ -8,6 +8,7 @@
       <el-menu-item index="/batch-update/price">修改价格</el-menu-item>
       <el-menu-item index="/batch-update/stock">修改库存</el-menu-item>
       <el-menu-item index="/batch-update/cat-prop">修改类目属性</el-menu-item>
+      <el-menu-item index="/batch-update/food-prop">修改食品属性</el-menu-item>
     </el-sub-menu>
   </el-menu>
 </template>

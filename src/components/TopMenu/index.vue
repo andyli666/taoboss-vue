@@ -165,6 +165,7 @@ const menuList = [
             { index: '/batch-update/price', label: '批量修改价格', icon: '🏷️', desc: '可定时执行' },
             { index: '/batch-update/stock', label: '批量修改库存', icon: '📦', desc: '可定时执行' },
             { index: '/batch-update/cat-prop', label: '批量修改类目属性', icon: '🧩', desc: '可定时执行' },
+            { index: '/batch-update/food-prop', label: '批量修改食品属性', icon: '🥫', desc: '可定时执行' },
         ],
     },
     {
@@ -220,7 +221,7 @@ const menuList = [
 // ============================================================
 const hoverIndex = ref(null)
 const showRenewDialog = ref(false)
-const selectedPlan = ref('pro')
+const selectedPlan = ref('standard')
 
 const renewPlans = [
     {
@@ -234,8 +235,8 @@ const renewPlans = [
     {
         value: 'standard',
         name: '标准版',
-        price: 128,
-        period: '年',
+        price: 35,
+        period: '季',
         dailyPrice: '0.35',
         features: ['批量修改单次任务限额 10000 个商品', '批量修改单日限额 50000 个'],
         recommend: true,
@@ -243,8 +244,8 @@ const renewPlans = [
     {
         value: 'pro',
         name: '专业版',
-        price: 198,
-        period: '年',
+        price: 50,
+        period: '季',
         dailyPrice: '0.54',
         features: ['批量修改单次任务限额 50000 个商品', '批量修改单日不限量'],
         recommend: false,

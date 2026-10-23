@@ -262,6 +262,7 @@ const sanitizeXml = (xml) => {
     result = result.replace(/='([^']*)'/g, (match, value) => `='${value.replace(/</g, '&lt;')}'`)
     return result
 }
+export { sanitizeXml }
 
 /**
  * 解析 catProp schema
