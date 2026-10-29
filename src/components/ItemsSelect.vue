@@ -87,7 +87,7 @@
 <script setup>
 import { reactive, ref, watch } from 'vue'
 import request from '@/utils/request'
-import { deepCopy, getItemWirelessUrl, getWeek, getApproveStatus } from '@/utils/index'
+import { deepCopy, getItemWirelessUrl, getWeek, getApproveStatus, isValidNumIid } from '@/utils/index'
 
 const dialogVisible = ref(false)
 const tableData = ref([])
@@ -126,8 +126,52 @@ const props = defineProps({
 })
 
 const loading = ref(false)
+
+// 商品ID
+const handleInputTagChangeNumIid = (val) => {
+    // 去重
+    const uniqueArray = [...new Set(val)]
+    form.numIid = uniqueArray
+    checkInputTagNumIid()
+}
+const checkInputTagNumIid = () => {
+    if (form.numIid.length > 100) {
+        ElMessage.error('最多输入100个商品ID，已超出' + (form.numIid.length - 100) + '个')
+        return false
+    }
+    return true
+}
+const handleAddTagNumIid = (val) => {
+    const valid = isValidNumIid(val)
+    if (valid !== true) {
+        form.numIid.pop()
+        ElMessage.error(valid)
+    }
+}
+
+// 商家编码
+const handleInputTagChangeOuterId = (val) => {
+    // 去重
+    const uniqueArray = [...new Set(val)]
+    form.outerId = uniqueArray
+    checkInputTagOuterId()
+}
+const checkInputTagOuterId = () => {
+    if (form.outerId.length > 50) {
+        ElMessage.error('最多输入50个商家编码，已超出' + (form.outerId.length - 50) + '个')
+        return false
+    }
+    return true
+}
+
 // refreshSync=true（用户主动点查询/首次打开弹窗）时后端强制增量同步淘宝商品，翻页/排序走 60s 节流同步
 const getItems = (refreshSync = false) => {
+    if (!checkInputTagNumIid()) {
+        return
+    }
+    if (!checkInputTagOuterId()) {
+        return
+    }
     loading.value = true
     request.post('/api/v1/item/get-items', {
         title: form.title,

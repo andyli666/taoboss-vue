@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <el-menu :default-active="activeIndex" class="el-menu-aside" :default-openeds="['1']" router>
     <el-sub-menu index="1">
       <template #title>批量修改</template>
@@ -7,6 +7,7 @@
       <el-menu-item index="/batch-update/shop-title">修改导购标题</el-menu-item>
       <el-menu-item index="/batch-update/price">修改价格</el-menu-item>
       <el-menu-item index="/batch-update/stock">修改库存</el-menu-item>
+      <el-menu-item index="/batch-update/sku-prop-name">修改SKU名称</el-menu-item>
       <el-menu-item index="/batch-update/cat-prop">修改类目属性</el-menu-item>
       <el-menu-item index="/batch-update/food-prop">修改食品属性</el-menu-item>
     </el-sub-menu>

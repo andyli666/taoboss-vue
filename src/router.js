@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+﻿import { createRouter, createWebHistory } from 'vue-router'
 export const router = createRouter({
     history: createWebHistory(),
     routes: [
@@ -258,6 +258,14 @@ export const router = createRouter({
                         aside: () => import('./views/batch-update/components/Aside.vue')
                     },
                     meta: { title: '批量修改导购标题' }
+                },
+                {
+                    path: 'sku-prop-name',
+                    components: {
+                        default: () => import('./views/batch-update/sku-prop-name/index.vue'),
+                        aside: () => import('./views/batch-update/components/Aside.vue')
+                    },
+                    meta: { title: '批量修改SKU名称' }
                 },
                 {
                     path: 'stock',

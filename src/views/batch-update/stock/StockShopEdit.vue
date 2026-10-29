@@ -547,9 +547,13 @@ const startPolling = (taskId) => {
 }
 
 const doStartUpdate = () => {
-    dialogProgressVisible.value = true
     percentage.value = 0
     saveCompleteMsg.value = ''
+    progressStats.total = 0
+    progressStats.success = 0
+    progressStats.fail = 0
+    progressStats.skip = 0
+    dialogProgressVisible.value = true
     request.post('/api/v1/batch-update-stock/create-task', {
         filterForm: formShopRef.value.form,
         updateContentForm: updateContentForm

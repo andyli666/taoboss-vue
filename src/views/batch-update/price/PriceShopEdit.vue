@@ -645,9 +645,13 @@ const { ensureW2Auth, stopW2Check } = useW2Auth()
 
 const doStartUpdate = async () => {
     if (!(await ensureW2Auth(doStartUpdate))) return
-    dialogProgressVisible.value = true
     percentage.value = 0
     saveCompleteMsg.value = ''
+    progressStats.total = 0
+    progressStats.success = 0
+    progressStats.fail = 0
+    progressStats.skip = 0
+    dialogProgressVisible.value = true
     try {
         const response = await request.post('/api/v1/batch-update-price/create-task', {
             filterForm: formShopRef.value.form,

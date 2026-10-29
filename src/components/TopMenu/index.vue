@@ -1,4 +1,4 @@
-<!-- src/components/TopMenu/index.vue -->
+﻿<!-- src/components/TopMenu/index.vue -->
 <template>
     <header class="top-menu-header">
         <div class="menu-container">
@@ -164,6 +164,7 @@ const menuList = [
             { index: '/batch-update/shop-title', label: '批量修改导购标题', icon: '📝', desc: '可定时执行' },
             { index: '/batch-update/price', label: '批量修改价格', icon: '🏷️', desc: '可定时执行' },
             { index: '/batch-update/stock', label: '批量修改库存', icon: '📦', desc: '可定时执行' },
+            { index: '/batch-update/sku-prop-name', label: '批量修改SKU名称', icon: '🔖', desc: '可定时执行' },
             { index: '/batch-update/cat-prop', label: '批量修改类目属性', icon: '🧩', desc: '可定时执行' },
             { index: '/batch-update/food-prop', label: '批量修改食品属性', icon: '🥫', desc: '可定时执行' },
         ],

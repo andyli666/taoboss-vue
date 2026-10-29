@@ -96,9 +96,10 @@ export const isValidNumIid = (str) => {
 }
 // 获取商品状态
 export const getApproveStatus = (approveStatus) => {
-    if (approveStatus == 'onsale') {
+    // 兼容字符串（onsale/instock）与数字（4=出售中 0=仓库中）两种返回
+    if (approveStatus === 'onsale' || approveStatus === 4 || approveStatus === '4') {
         return '出售中'
-    } else if (approveStatus == 'instock') {
+    } else if (approveStatus === 'instock' || approveStatus === 0 || approveStatus === '0') {
         return '仓库中'
     }
     return '未知状态'

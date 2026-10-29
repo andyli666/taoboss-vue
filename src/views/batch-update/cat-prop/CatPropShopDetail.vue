@@ -29,7 +29,7 @@
                                     <el-row>{{ scope.row.title }}</el-row>
                                     <el-row>
                                         <span>ID:{{ scope.row.numIid }}</span>
-                                        <span v-if="scope.row.recoverNum > 0" class="ml-5 h">已恢复{{ scope.row.recoverNum }}次</span>
+                                        <span v-if="scope.row.recoverNum > 0" class="ml-5 h">已恢复成功{{ scope.row.recoverNum }}次</span>
                                     </el-row>
                                 </div>
                             </div>
@@ -47,6 +47,20 @@
                             </div>
                             <div v-else-if="scope.row.changeText" class="h" v-html="scope.row.changeText"></div>
                             <div v-else class="text-gray">-</div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="最近一次恢复信息" min-width="80">
+                        <template #default="scope">
+                            <div v-if="scope.row.msg" class="msg-cell">
+                                <el-tooltip :content="scope.row.msg" placement="top" :show-after="300">
+                                    <span class="msg-text">{{ scope.row.msg }}</span>
+                                </el-tooltip>
+                                <el-tooltip content="复制" placement="top" :show-after="200">
+                                    <el-icon class="copy-icon" @click="copyText(scope.row.msg)">
+                                        <DocumentCopy />
+                                    </el-icon>
+                                </el-tooltip>
+                            </div>
                         </template>
                     </el-table-column>
                 </el-table>
