@@ -1,4 +1,4 @@
-﻿<template>
+﻿﻿<template>
     <FormList ref="formListRef" :withSku="true" :sort="sort" :order="order" :currentPage="currentPage"
         :pageSize="pageSize" @loaded="handleLoaded" />
     <el-table :data="tableData" row-key="id" ref="tableRef" @sort-change="handleSortChange">

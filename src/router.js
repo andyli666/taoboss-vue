@@ -1,4 +1,5 @@
-﻿import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
+import { trackPageView } from './utils/track'
 export const router = createRouter({
     history: createWebHistory(),
     routes: [
@@ -161,6 +162,18 @@ export const router = createRouter({
             name: 'RegionSalesAnalysis',
             component: () => import('@/views/statistics/RegionSalesAnalysis.vue'),
             meta: { title: '买家地区分析', hideAside: true }
+        },
+        {
+            path: '/admin/usage-stats',
+            name: 'UsageStats',
+            component: () => import('./views/admin/UsageStats.vue'),
+            meta: { title: '批量修改使用统计', hideAside: true }
+        },
+        {
+            path: '/admin/page-views',
+            name: 'PageViewStats',
+            component: () => import('./views/admin/PageViewStats.vue'),
+            meta: { title: '页面访问统计', hideAside: true }
         },
         {
             path: '/freight/',
@@ -401,6 +414,11 @@ router.beforeEach((to, from, next) => {
     const pageTitle = to.meta?.title
     document.title = pageTitle ? `${pageTitle} - 淘掌柜` : defaultTitle
     next()
+})
+
+// 页面访问统计上报（首次进入、路由切换都会触发；内部含登录态判断与 30 秒节流）
+router.afterEach((to) => {
+    trackPageView(to)
 })
 
 export default router
