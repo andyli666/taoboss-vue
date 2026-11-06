@@ -167,6 +167,7 @@ const menuList = [
             { index: '/batch-update/sku-prop-name', label: '批量修改SKU名称', icon: '🔖', desc: '可定时执行' },
             { index: '/batch-update/cat-prop', label: '批量修改类目属性', icon: '🧩', desc: '可定时执行' },
             { index: '/batch-update/food-prop', label: '批量修改食品属性', icon: '🥫', desc: '可定时执行' },
+            { index: '/batch-update/other', label: '批量修改其他', icon: '🔧', desc: '可定时执行' },
         ],
     },
     {

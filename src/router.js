@@ -304,6 +304,14 @@ export const router = createRouter({
                     },
                     meta: { title: '批量修改食品属性' }
                 },
+                {
+                    path: 'other',
+                    components: {
+                        default: () => import('./views/batch-update/other/index.vue'),
+                        aside: () => import('./views/batch-update/components/Aside.vue')
+                    },
+                    meta: { title: '批量修改其他' }
+                },
             ]
         },
         {

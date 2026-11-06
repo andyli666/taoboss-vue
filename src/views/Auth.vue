@@ -80,7 +80,24 @@ const reAuth = () => {
     })
 }
 
+// 发送页面访问记录
+const sendPageVisitRecord = () => {
+    Promise.resolve()
+        .then(() => fetch('/api/auth/record-page-visit-record', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                path: route.path,
+                body: JSON.stringify(route.query)
+            })
+        }))
+        .catch(() => { })
+}
+
 onMounted(() => {
+    sendPageVisitRecord()
     auth()
 })
 
