@@ -1,5 +1,5 @@
 # 构建并发布项目步骤
-## 1. 构建项目
+```## 1. 构建项目
 ```bash
 npm run build
 ```
@@ -11,3 +11,4 @@ ssh -i C:\Users\64621\OneDrive\文档\技术\云主机密钥\i-8vbesag603mz6ldyn
 ```bash
 scp -i C:\Users\64621\OneDrive\文档\技术\云主机密钥\i-8vbesag603mz6ldyn8sk.pem -r dist/* root@39.98.161.6:/srv/vue/dist/
 ```
+## ```
