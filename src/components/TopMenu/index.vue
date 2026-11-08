@@ -122,12 +122,6 @@ import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import request from '@/utils/request'
 import {
-    DataAnalysis,
-    TrendCharts,
-    Money,
-    Setting,
-    Promotion,
-    HomeFilled,
     ArrowDown,
     ChatDotRound,
 } from '@element-plus/icons-vue'
