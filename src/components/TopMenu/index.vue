@@ -127,6 +127,7 @@ import {
     Money,
     Setting,
     Promotion,
+    HomeFilled,
     ArrowDown,
     ChatDotRound,
 } from '@element-plus/icons-vue'
@@ -140,14 +141,15 @@ const route = useRoute()
 const menuList = [
     {
         index: '/index',
-        label: '工作台',
-        icon: 'Monitor',
+        label: '首页',
+        icon: 'HomeFilled',
         children: null,
     },
     {
         index: '/marketing',
         label: '关联营销',
         icon: 'Promotion',
+        matchPrefix: '/recommend',
         children: [
             { index: '/recommend/new?tab=system', label: '新建活动', icon: '✨', desc: '利用模板自动生成关联营销' },
             { index: '/recommend/new?tab=custom', label: '自定义图片', icon: '🖼️', desc: '上传活动图片批量发布到商品' },
@@ -263,6 +265,9 @@ const currentPath = computed(() => route.path)
 // 4. 方法
 // ============================================================
 const isActive = (item) => {
+    if (item.matchPrefix && currentPath.value.startsWith(item.matchPrefix)) {
+        return true
+    }
     if (!item.children || item.children.length === 0) {
         return currentPath.value === item.index
     }
@@ -788,6 +793,12 @@ defineExpose({
    响应式
    ============================================================ */
 /* #app min-width 1200px 下，1200~1400px 区间内容偏挤，收紧间距字号防止菜单与右侧重叠 */
+@media screen and (min-width: 1401px) and (max-width: 1500px) {
+    .menu-center {
+        gap: 6px;
+    }
+}
+
 @media screen and (max-width: 1400px) {
     .menu-container {
         padding: 0 16px;

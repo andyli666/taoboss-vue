@@ -5,15 +5,15 @@
             <div class="wb-user">
                 <el-avatar :size="42" :src="user.picPath" />
                 <div class="wb-user-info">
-                    <div class="wb-title">运营工作台</div>
+                    <!-- <div class="wb-title">运营工作台</div> -->
                     <div class="wb-sub">你好，{{ user.title || '掌柜' }}，祝今日大卖，财源滚滚</div>
                 </div>
             </div>
-            <div class="wb-meta">
+            <!-- <div class="wb-meta">
                 <span>版本：{{ user.articleItemName || '-' }}</span>
                 <span>到期：{{ deadlineText }}</span>
                 <el-button size="small" :icon="Refresh" @click="refreshAll">刷新</el-button>
-            </div>
+            </div> -->
         </div>
 
         <!-- ====== 订单同步状态 ====== -->
