@@ -381,11 +381,13 @@ export const router = createRouter({
         },
         { path: '/', redirect: '/index' },
         {
-            // path: '/index', name: 'index', component: () => import('./views/Index.vue'), meta: {
-            //     hideAside: true
-            // }
-            path: '/index', name: 'index', component: () => import('./views/Dashboard.vue'), meta: {
-                title: '工作台', hideAside: true
+            path: '/index', name: 'index', component: () => import('./views/Workbench.vue'), meta: {
+                title: '运营工作台', hideAside: true
+            }
+        },
+        {
+            path: '/dashboard', name: 'dashboard', component: () => import('./views/Dashboard.vue'), meta: {
+                title: '经营数据看板', hideAside: true
             }
         },
         {

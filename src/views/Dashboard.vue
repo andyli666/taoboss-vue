@@ -3,7 +3,7 @@
         <!-- ====== 顶部标题栏 ====== -->
         <div class="dashboard-header">
             <div class="header-left">
-                <h2>📊 工作台</h2>
+                <h2>📊 经营数据看板</h2>
             </div>
             <div class="header-right">
                 <el-button type="primary" :icon="Refresh" @click="refreshData">刷新</el-button>
