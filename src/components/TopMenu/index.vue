@@ -599,7 +599,7 @@ defineExpose({
     flex-shrink: 0;
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 8px;
     white-space: nowrap;
 }
 
