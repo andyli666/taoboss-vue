@@ -69,7 +69,7 @@ const { trialDays, planName, init: initSub, isWarningPeriod, isWarnedToday, mark
 
 const showSubWarning = ref(false)
 
-const subWarningTitle = computed(() => '订阅即将到期')
+const subWarningTitle = computed(() => '软件即将到期')
 const subWarningMsg = computed(() => {
   const plan = planName.value || '您的订购'
   const d = trialDays.value

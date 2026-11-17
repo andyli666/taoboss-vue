@@ -596,6 +596,7 @@ const syncStatus = ref({
     showBanner: false
 })
 let syncPollTimer = null
+let syncBannerTimer = null
 
 const checkSyncStatus = async () => {
     try {
@@ -618,6 +619,7 @@ const checkSyncStatus = async () => {
 
         if (data.is_completed) {
             localStorage.setItem(SYNC_SHOWN_KEY, 'true')
+            syncBannerTimer = setTimeout(closeSyncBanner, 3000)
             await refreshSilent()
             stopSyncPolling()
         }
@@ -644,6 +646,10 @@ const stopSyncPolling = () => {
 }
 
 const closeSyncBanner = () => {
+    if (syncBannerTimer) {
+        clearTimeout(syncBannerTimer)
+        syncBannerTimer = null
+    }
     syncStatus.value.showBanner = false
     stopSyncPolling()
     if (syncStatus.value.isCompleted) {
@@ -684,6 +690,7 @@ const handleResize = () => {
 
 onUnmounted(() => {
     stopSyncPolling()
+    if (syncBannerTimer) clearTimeout(syncBannerTimer)
     window.removeEventListener('resize', handleResize)
     chartInstance?.dispose()
 })
