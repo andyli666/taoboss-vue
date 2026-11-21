@@ -420,7 +420,7 @@ export const router = createRouter({
 
 // 路由守卫 - 动态设置页面标题
 router.beforeEach((to, from, next) => {
-    const defaultTitle = '淘掌柜 - 店铺利润核算与运营工具'
+    const defaultTitle = '淘掌柜 - 关联营销批量修改定时任务财务利润统计'
     const pageTitle = to.meta?.title
     document.title = pageTitle ? `${pageTitle} - 淘掌柜` : defaultTitle
     next()

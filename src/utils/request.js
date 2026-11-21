@@ -50,6 +50,12 @@ request.interceptors.response.use(
             // console.log('data:', data)
             switch (status) {
                 case 401:
+                    // 登录接口自身的 401 是账号/top_session 校验失败，必须把后端提示显示出来，
+                    // 否则会被下面的“登录页静默挂起”逻辑吞掉，用户点击登录后看不到任何反馈
+                    if (error.config?.url?.includes('/dev-login/')) {
+                        ElMessage.error(data?.msg || data?.message || '登录失败，请重新登录')
+                        break
+                    }
                     localStorage.removeItem('token')
                     sessionStorage.setItem('redirectPath', router.currentRoute.value.path)
                     // 已在登录页：静默挂起（登录页上不应再有需要鉴权的请求提示）

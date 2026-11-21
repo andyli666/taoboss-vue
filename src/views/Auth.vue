@@ -64,7 +64,9 @@ const auth = () => {
             if (response.data.code == 401) {
                 window.location.href = response.data.data.url
             }
-            ElMessage.error(response.data.msg)
+            if (response.data.msg) {
+              ElMessage.error(response.data.msg)
+            }
         }
     }).catch((error) => {
         ElMessage.error(error)
