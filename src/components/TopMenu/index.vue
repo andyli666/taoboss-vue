@@ -161,6 +161,7 @@ const menuList = [
             { index: '/batch-update/price', label: '批量修改价格', icon: '🏷️', desc: '可定时执行' },
             { index: '/batch-update/stock', label: '批量修改库存', icon: '📦', desc: '可定时执行' },
             { index: '/batch-update/sku-prop-name', label: '批量修改SKU名称', icon: '🔖', desc: '可定时执行' },
+            { index: '/batch-update/barcode', label: '批量修改条形码', icon: '🔢', desc: '商品/SKU条形码批量修改' },
             { index: '/batch-update/cat-prop', label: '批量修改类目属性', icon: '🧩', desc: '可定时执行' },
             { index: '/batch-update/food-prop', label: '批量修改食品属性', icon: '🥫', desc: '可定时执行' },
             { index: '/batch-update/other', label: '批量修改其他', icon: '🔧', desc: '可定时执行' },
@@ -224,10 +225,10 @@ const selectedPlan = ref('standard')
 const renewPlans = [
     {
         value: 'free',
-        name: '免费版',
+        name: '免费试用期',
         price: 0,
         period: '免费试用',
-        features: ['批量修改单次任务限额 100 个商品', '批量修改单日限额 1000 个'],
+        features: ['批量修改单次任务限额 100 个商品', '批量修改单日限额 500 个商品'],
         recommend: false,
     },
     {
@@ -235,17 +236,17 @@ const renewPlans = [
         name: '标准版',
         price: 35,
         period: '季',
-        dailyPrice: '0.35',
-        features: ['批量修改单次任务限额 10000 个商品', '批量修改单日限额 50000 个'],
+        dailyPrice: '0.39',
+        features: ['批量修改单次任务限额 5000 个商品', '批量修改单日限额 30000 个商品'],
         recommend: true,
     },
     {
         value: 'pro',
         name: '专业版',
-        price: 50,
+        price: 60,
         period: '季',
-        dailyPrice: '0.54',
-        features: ['批量修改单次任务限额 50000 个商品', '批量修改单日不限量'],
+        dailyPrice: '0.67',
+        features: ['批量修改单次任务限额 10000 个商品', '批量修改单日不限量'],
         recommend: false,
     },
 ]

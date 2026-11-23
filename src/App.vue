@@ -48,7 +48,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, provide } from 'vue'
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import { Fold, Expand } from '@element-plus/icons-vue'
 import TopMenu from '@/components/TopMenu/index.vue'
@@ -65,6 +65,8 @@ const toggleAside = () => {
 
 // 订阅到期预警
 const topMenuRef = ref(null)
+// 供子组件（如批量修改的额度提示）复用顶部菜单的「版本区别」升级弹窗
+provide('openRenewDialog', () => topMenuRef.value?.openRenewDialog?.())
 const { trialDays, planName, init: initSub, isWarningPeriod, isWarnedToday, markWarnedToday } = useSubscriptionStatus()
 
 const showSubWarning = ref(false)

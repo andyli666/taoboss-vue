@@ -273,6 +273,7 @@ const batchModules = [
     { name: '修改价格', desc: '全店涨价/降价，支持SKU价格修改', icon: '🏷️', path: '/batch-update/price' },
     { name: '修改库存', desc: '按范围统一设置商品/SKU 库存', icon: '📦', path: '/batch-update/stock' },
     { name: '修改SKU名称', desc: '批量替换 SKU 规格名', icon: '🔖', path: '/batch-update/sku-prop-name' },
+    { name: '修改条形码', desc: '批量修改商品/SKU条形码', icon: '🔢', path: '/batch-update/barcode' },
     { name: '修改类目属性', desc: '按模板商品统一填写属性', icon: '🧩', path: '/batch-update/cat-prop' },
     { name: '修改食品属性', desc: '保质期、产地等批量填写', icon: '🥫', path: '/batch-update/food-prop' },
     { name: '修改其他', desc: '物流体积重量等杂项批量修改', icon: '🔧', path: '/batch-update/other' },

@@ -11,7 +11,7 @@
                 </el-button>
             </template>
             <template #default="scope">
-                <div class="textarea-wrap">
+                <div class="textarea-wrap pic-top">
                     <div>
                         <a :href="getItemWirelessUrl(scope.row.num_iid)" target="_blank">
                             <el-image :src="scope.row.pic_url + '_60x60.jpg'" style="width:60px">
@@ -19,7 +19,8 @@
                             </el-image>
                         </a>
                     </div>
-                    <div class="ml-5 text-gray">
+                    <div class="ml-5 text-gray item-info">
+                        <el-row>{{ scope.row.title }}</el-row>
                         <el-row style="word-break: break-all">ID:{{ scope.row.num_iid }}</el-row>
                         <el-row>状态:{{ getApproveStatus(scope.row.approve_status) }}</el-row>
                         <el-row>商家编码:{{ scope.row.outer_id ?? '无' }}</el-row>
@@ -282,6 +283,32 @@ const handleRecovered = (recoveredTitle) => {
 .textarea-wrap {
     display: flex;
     align-items: center;
+}
+
+/* 图片容器行高归零，避免行内基线留白把图片往下推，保证图片顶部与标题顶部齐平 */
+.textarea-wrap.pic-top {
+    align-items: flex-start;
+}
+
+.textarea-wrap.pic-top>div:first-child {
+    line-height: 0;
+    flex-shrink: 0;
+}
+
+/* 商品信息列字号 12px */
+.item-info {
+    font-size: 12px;
+    /* 表格 .cell 的 23px 行高会被继承，12px 文字上方留出约 5px 行距留白，
+       视觉上标题比左侧图片低；收紧行高后首行文字顶部才能与图片顶部齐平 */
+    line-height: 1.3;
+}
+
+.item-info>.el-row:first-child {
+    margin-top: -1px;
+}
+
+.item-info>.el-row {
+    margin-bottom: 6px;
 }
 
 /* 勾选列压内边距：45px 宽下 checkbox 完整显示 */

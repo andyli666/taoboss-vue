@@ -4,22 +4,7 @@
         <el-breadcrumb-item>批量修改</el-breadcrumb-item>
         <el-breadcrumb-item>修改价格</el-breadcrumb-item>
     </el-breadcrumb>
-    <div class="mtb-15">
-        <el-alert title="" type="info" show-icon :closable="false">
-            <div>
-                当前版本<span class="h-b">{{ quotaStatus.planName }}</span>，
-                批量改价单次任务限额<span class="h-b">{{ quotaStatus.singleTaskCap > 0 ? quotaStatus.singleTaskCap + '个商品' : '不限' }}</span>，
-                <template v-if="quotaStatus.dailyLimit > 0">
-                    单日累计限额<span class="h-b">{{ quotaStatus.dailyLimit }}</span>个，
-                    已用<span class="h-b">{{ quotaStatus.dailyUsed }}</span>，
-                    剩余<span class="h-b">{{ quotaStatus.dailyRemain }}</span>
-                </template>
-                <template v-else>
-                    今日不限量
-                </template>
-            </div>
-        </el-alert>
-    </div>
+    <BatchQuotaTip :quota-status="quotaStatus" />
     <el-tabs type="border-card" v-model="activeName">
         <!-- lazy：首次点击 tab 才渲染（加载数据），渲染后不销毁，切换不会重复加载 -->
         <el-tab-pane label="范围修改" name="shop" lazy>
@@ -33,6 +18,7 @@
 
 <script setup>
 import { onMounted, reactive, ref } from 'vue'
+import BatchQuotaTip from '../BatchQuotaTip.vue'
 import PriceShopEdit from './PriceShopEdit.vue'
 import PriceListEdit from './PriceListEdit.vue'
 import request from '@/utils/request'
@@ -56,13 +42,3 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
-.mtb-15 {
-    margin: 15px 0;
-}
-
-.h-b {
-    font-weight: bold;
-    color: #409EFF;
-}
-</style>

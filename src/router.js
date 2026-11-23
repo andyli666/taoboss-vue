@@ -281,6 +281,14 @@ export const router = createRouter({
                     meta: { title: '批量修改SKU名称' }
                 },
                 {
+                    path: 'barcode',
+                    components: {
+                        default: () => import('./views/batch-update/barcode/index.vue'),
+                        aside: () => import('./views/batch-update/components/Aside.vue')
+                    },
+                    meta: { title: '批量修改条形码' }
+                },
+                {
                     path: 'stock',
                     components: {
                         default: () => import('./views/batch-update/stock/index.vue'),
